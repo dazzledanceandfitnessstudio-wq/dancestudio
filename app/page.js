@@ -471,7 +471,7 @@ export default function LandingPage() {
                   </div>
                   <div className="ld-slide-footer">
                     <button
-                      className="btn-gradient-cta"
+                      className="btn-enroll-neon"
                       style={{ width: "100%" }}
                       disabled={enrollingId === event.id}
                       onClick={() => handleEnrollClick(event.id)}
