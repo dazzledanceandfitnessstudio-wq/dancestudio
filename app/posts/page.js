@@ -13,53 +13,7 @@ import {
 } from "lucide-react";
 import "./posts.css";
 
-// ─── Demo fallback — rendered locally, never written to Firestore ──────────
-const DEMO_POSTS = [
-  {
-    id: "demo-1",
-    title: "Welcome to Dazzle Dance Studio",
-    excerpt:
-      "We officially opened our doors and we couldn't be more excited. From hip-hop fundamentals to advanced breaking — this is your home court.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1547153760-18fc86324498?w=800&q=80",
-    category: "Studio News",
-    createdAt: { toDate: () => new Date("2026-06-01") },
-    readTime: "3 min read",
-  },
-  {
-    id: "demo-2",
-    title: "Summer Hip-Hop Workshop Recap",
-    excerpt:
-      "Three days, forty dancers, one unforgettable cypher. Here's everything that went down at our inaugural summer intensive.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1504609813442-a8924e83f76e?w=800&q=80",
-    category: "Workshops",
-    createdAt: { toDate: () => new Date("2026-06-18") },
-    readTime: "5 min read",
-  },
-  {
-    id: "demo-3",
-    title: "Meet Our New Instructors",
-    excerpt:
-      "We're thrilled to welcome three world-class educators to the Dazzle faculty — each bringing a unique movement language to our curriculum.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&q=80",
-    category: "Instructors",
-    createdAt: { toDate: () => new Date("2026-07-02") },
-    readTime: "4 min read",
-  },
-  {
-    id: "demo-4",
-    title: "Breaking Down the Basics: Footwork 101",
-    excerpt:
-      "Good technique starts at ground level. Our lead breaking coach breaks down the six foundational footwork patterns every dancer needs to master.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80",
-    category: "Tutorials",
-    createdAt: { toDate: () => new Date("2026-07-10") },
-    readTime: "6 min read",
-  },
-];
+// ─── No Demo Fallback ──────────────────────────────────────────
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 function formatDate(timestamp) {
@@ -164,7 +118,6 @@ export default function PostsPage() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [usingDemo, setUsingDemo] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -177,15 +130,12 @@ export default function PostsPage() {
         if (fetched && fetched.length > 0) {
           setPosts(fetched);
         } else {
-          // DB empty — silently fall back to demo data, no writes
-          setPosts(DEMO_POSTS);
-          setUsingDemo(true);
+          setPosts([]);
         }
-      } catch {
-        // On any error (permissions, network) — fall back gracefully
+      } catch (err) {
         if (!cancelled) {
-          setPosts(DEMO_POSTS);
-          setUsingDemo(true);
+          setPosts([]);
+          setError("Failed to load posts.");
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -244,14 +194,6 @@ export default function PostsPage() {
       </header>
 
       <main className="posts-container">
-        {/* ── Error fallback notice (demo mode) ── */}
-        {!loading && usingDemo && !error && (
-          <div className="posts-demo-notice" role="status">
-            <Sparkles size={14} strokeWidth={2} />
-            Showing demo content — connect to Firestore to load live posts.
-          </div>
-        )}
-
         {/* ── Explicit error banner ── */}
         {error && (
           <div className="posts-error" role="alert">
@@ -296,24 +238,31 @@ export default function PostsPage() {
           </div>
         )}
 
-        {/* ── Empty state (filtered to nothing) ── */}
-        {!loading && filtered.length === 0 && (
+        {/* ── Empty state (no posts globally or filtered) ── */}
+        {!loading && filtered.length === 0 && !error && (
           <div className="posts-empty">
             <div className="posts-empty-icon">
               <Newspaper size={36} strokeWidth={1.5} />
             </div>
-            <div className="posts-empty-title">No posts in this category</div>
-            <div className="posts-empty-desc">
-              Try selecting a different category, or check back soon for new
-              articles.
+            <div className="posts-empty-title">
+              {activeCategory === "All"
+                ? "No posts available."
+                : "No posts in this category"}
             </div>
-            <button
-              className="posts-filter-pill posts-filter-active"
-              onClick={() => setActiveCategory("All")}
-              style={{ marginTop: "0.5rem" }}
-            >
-              Show All Posts
-            </button>
+            <div className="posts-empty-desc">
+              {activeCategory === "All"
+                ? "Check back later for studio news and updates."
+                : "Try selecting a different category, or check back soon for new articles."}
+            </div>
+            {activeCategory !== "All" && (
+              <button
+                className="posts-filter-pill posts-filter-active"
+                onClick={() => setActiveCategory("All")}
+                style={{ marginTop: "0.5rem" }}
+              >
+                Show All Posts
+              </button>
+            )}
           </div>
         )}
       </main>

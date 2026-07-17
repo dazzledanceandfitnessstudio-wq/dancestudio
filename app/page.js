@@ -38,111 +38,7 @@ import {
 } from "lucide-react";
 import "./landing.css";
 
-// ─── Seed Data (written to Firestore if empty) ─────────────
-const SEED_EVENTS = [
-  {
-    id: "hiphop_intro",
-    title: "Intro to Hip Hop",
-    description:
-      "Master the foundations of hip hop dance. Perfect for beginners looking to find their groove.",
-    imageUrl:
-      "https://cdn.prod.website-files.com/5dbb40d6d8c97447e9450447/60baaab0aa12e6d6ad9074b6_STEEZY_HIPHOP-min.avif",
-    danceStyle: "Hip Hop",
-    level: "Beginner",
-    venue: "Studio A",
-    maxParticipants: 30,
-    enrolledCount: 0,
-    pendingCount: 0,
-    status: "ACTIVE",
-  },
-  {
-    id: "jazz_funk",
-    title: "Jazz Funk Fundamentals",
-    description:
-      "Combine the technique of jazz with the raw street style of hip hop in this high-energy class.",
-    imageUrl:
-      "https://cdn.prod.website-files.com/5dbb40d6d8c97447e9450447/60baaab0f8caa4145fe07fef_STEEZY_JAZZ-min.avif",
-    danceStyle: "Jazz Funk",
-    level: "Intermediate",
-    venue: "Studio B",
-    maxParticipants: 25,
-    enrolledCount: 0,
-    pendingCount: 0,
-    status: "ACTIVE",
-  },
-  {
-    id: "contemporary_ballet",
-    title: "Contemporary Ballet",
-    description:
-      "A modern twist on classical ballet focusing on expression, fluidity, and core strength.",
-    imageUrl:
-      "https://cdn.prod.website-files.com/5dbb40d6d8c97447e9450447/60baaab004cd38de543dd7a1_STEEZY_BALLET-min.avif",
-    danceStyle: "Ballet",
-    level: "All Levels",
-    venue: "Main Hall",
-    maxParticipants: 20,
-    enrolledCount: 0,
-    pendingCount: 0,
-    status: "ACTIVE",
-  },
-];
-
-const DEMO_POSTS = [
-  {
-    id: "demo_post_1",
-    title: "5 Tips to Improve Your Groove",
-    excerpt:
-      "Stop overthinking your moves and start feeling the music. Here is how to loosen up and find your natural groove on the dance floor.",
-    createdAt: new Date(),
-    isDemo: true,
-  },
-  {
-    id: "demo_post_2",
-    title: "Meet Our New Instructors",
-    excerpt:
-      "We are thrilled to welcome two world-class choreographers to the Dazzle family this season.",
-    createdAt: new Date(Date.now() - 86400000 * 3),
-    isDemo: true,
-  },
-  {
-    id: "demo_post_3",
-    title: "The Importance of Stretching",
-    excerpt:
-      "Don't skip the warm-up! Why flexibility and dynamic stretching are critical for preventing dance injuries.",
-    createdAt: new Date(Date.now() - 86400000 * 7),
-    isDemo: true,
-  },
-];
-
-// ─── One-time DB seeding ───────────────────────────────────
-async function seedEventsIfEmpty() {
-  try {
-    const q = query(
-      collection(db, "events"),
-      where("status", "==", "ACTIVE")
-    );
-    const snapshot = await getDocs(q);
-
-    if (snapshot.empty) {
-      console.log("[Dazzle] No active events found — seeding database…");
-      const promises = SEED_EVENTS.map((event) => {
-        const { id, ...data } = event;
-        return setDoc(doc(db, "events", id), {
-          ...data,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        });
-      });
-      await Promise.all(promises);
-      console.log("[Dazzle] Seeded 3 events successfully.");
-      return true;
-    }
-    return false;
-  } catch (err) {
-    console.error("[Dazzle] Seed error:", err);
-    return false;
-  }
-}
+// ─── No Seed/Demo Data ───────────────────────────────────────
 
 // ─── Helpers ───────────────────────────────────────────────
 function formatShortDate(timestamp) {
@@ -218,32 +114,30 @@ export default function LandingPage() {
         console.error("Auth init:", err);
       }
 
-      // Seed events if DB is empty, then fetch
+      // Fetch Events
       try {
-        const didSeed = await seedEventsIfEmpty();
         const fetchedEvents = await eventService.getAllEvents();
         if (!cancelled) {
-          setEvents(fetchedEvents.length > 0 ? fetchedEvents : SEED_EVENTS);
+          setEvents(fetchedEvents || []);
           setLoadingEvents(false);
         }
       } catch {
         if (!cancelled) {
-          setEvents(SEED_EVENTS);
+          setEvents([]);
           setLoadingEvents(false);
         }
       }
 
-      // Posts
+      // Fetch Posts
       try {
         const fetchedPosts = await postService.getAllPosts();
         if (!cancelled) {
-          const topPosts = fetchedPosts.slice(0, 3);
-          setPosts(topPosts.length > 0 ? topPosts : DEMO_POSTS);
+          setPosts(fetchedPosts ? fetchedPosts.slice(0, 3) : []);
           setLoadingPosts(false);
         }
       } catch {
         if (!cancelled) {
-          setPosts(DEMO_POSTS);
+          setPosts([]);
           setLoadingPosts(false);
         }
       }
@@ -447,6 +341,10 @@ export default function LandingPage() {
               <div className="ld-skeleton ld-skeleton-card" key={i} style={{ flex: "0 0 320px" }} />
             ))}
           </div>
+        ) : events.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "3rem", color: "var(--color-muted)" }}>
+            <p>New events coming soon!</p>
+          </div>
         ) : (
           <div className="ld-slider-wrapper">
             <div className="ld-slider">
@@ -518,6 +416,10 @@ export default function LandingPage() {
               <div className="ld-skeleton" key={i} style={{ height: 180 }} />
             ))}
           </div>
+        ) : posts.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "3rem", color: "var(--color-muted)" }}>
+            <p>No posts available.</p>
+          </div>
         ) : (
           <div className="ld-posts-grid">
             {posts.map((post) => (
@@ -526,9 +428,8 @@ export default function LandingPage() {
                 className="ld-post-card"
                 key={post.id}
                 onClick={(e) => {
-                  if (post.isDemo) e.preventDefault();
+                  // handle navigation normally
                 }}
-                style={post.isDemo ? { cursor: "default" } : {}}
               >
                 <h3 className="ld-post-title">{post.title}</h3>
                 <p className="ld-post-excerpt">{post.excerpt}</p>

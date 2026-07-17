@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Sparkles,
   Music,
@@ -15,93 +15,7 @@ import {
 } from "lucide-react";
 import "./services.css";
 
-// ─── Demo services — hardcoded, never written to Firestore ─────────────────
-const DEMO_SERVICES = [
-  {
-    id: "svc-1",
-    title: "Private Choreography",
-    description:
-      "Book one-on-one sessions with our award-winning choreographers. Whether you're preparing for a competition, music video, or personal project — we'll craft a custom routine that highlights your strengths and pushes your movement vocabulary.",
-    icon: "Music",
-    price: "From $120 / session",
-    features: [
-      "Custom routine creation",
-      "Video recording included",
-      "Flexible scheduling",
-      "All styles available",
-    ],
-  },
-  {
-    id: "svc-2",
-    title: "Studio Space Rental",
-    description:
-      "Need a professional studio for rehearsals, content shoots, or private practice? Our climate-controlled spaces feature sprung floors, wall-to-wall mirrors, and premium sound systems — ready to book by the hour.",
-    icon: "Building2",
-    price: "From $65 / hour",
-    features: [
-      "3 studio rooms available",
-      "Sprung hardwood floors",
-      "Pro sound system & mirrors",
-      "After-hours access available",
-    ],
-  },
-  {
-    id: "svc-3",
-    title: "Wedding Dance Prep",
-    description:
-      "Make your first dance unforgettable. Our instructors work with couples of all experience levels to choreograph a wedding dance that feels natural, confident, and perfectly timed to your chosen song.",
-    icon: "Heart",
-    price: "From $250 / package",
-    features: [
-      "3–8 session packages",
-      "Song editing included",
-      "Partner & solo coaching",
-      "Day-of rehearsal available",
-    ],
-  },
-  {
-    id: "svc-4",
-    title: "Event & Performance Booking",
-    description:
-      "Bring the energy of Dazzle to your event. Our performance crew is available for corporate events, festivals, brand activations, and private parties — fully choreographed, costumed, and show-ready.",
-    icon: "Mic2",
-    price: "Custom quote",
-    features: [
-      "5–20 dancer crews",
-      "Fully choreographed sets",
-      "Custom themes & costumes",
-      "Setup & sound coordination",
-    ],
-  },
-  {
-    id: "svc-5",
-    title: "Group Workshops",
-    description:
-      "Perfect for team-building, birthday parties, or friend groups. Choose your style, and one of our instructors will lead a high-energy workshop tailored to your group's level and vibe.",
-    icon: "Users",
-    price: "From $350 / group",
-    features: [
-      "1–3 hour sessions",
-      "Up to 30 participants",
-      "All skill levels welcome",
-      "Multiple styles available",
-    ],
-  },
-  {
-    id: "svc-6",
-    title: "Content Creation Studio",
-    description:
-      "Creators and influencers — our space is Instagram and TikTok ready. Book a studio with ring lights, backdrop options, and Bluetooth speakers for your next dance content shoot.",
-    icon: "Camera",
-    price: "From $45 / hour",
-    features: [
-      "Ring light & lighting kit",
-      "Colored backdrop options",
-      "Bluetooth speaker included",
-      "Tripod & phone mount available",
-    ],
-  },
-];
+// ─── No Demo Fallback ────────────────────────────────────────────────────────
 
 // ─── Icon resolver ──────────────────────────────────────────────────────────
 const iconMap = {
@@ -170,7 +84,20 @@ function ServiceCard({ service, index }) {
 
 // ─── Main Page ──────────────────────────────────────────────────────────────
 export default function ServicesPage() {
-  const services = DEMO_SERVICES;
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Since there is no service fetching for "services" yet, we just simulate loading and then show empty state.
+  useEffect(() => {
+    let cancelled = false;
+    setTimeout(() => {
+      if (!cancelled) {
+        setServices([]);
+        setLoading(false);
+      }
+    }, 500);
+    return () => { cancelled = true; };
+  }, []);
 
   return (
     <div className="services-page">
@@ -203,12 +130,25 @@ export default function ServicesPage() {
       </header>
 
       <main className="svc-container">
-        {/* ── Service Grid ── */}
-        <div className="svc-grid">
-          {services.map((service, i) => (
-            <ServiceCard key={service.id} service={service} index={i} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="svc-grid">
+             {[1, 2].map((i) => (
+                <div key={i} style={{ height: "300px", background: "var(--color-surface-alt)", borderRadius: "var(--radius-xl)", animation: "pulse 1.5s infinite" }} />
+             ))}
+          </div>
+        ) : services.length > 0 ? (
+          <div className="svc-grid">
+            {services.map((service, i) => (
+              <ServiceCard key={service.id} service={service} index={i} />
+            ))}
+          </div>
+        ) : (
+          <div style={{ textAlign: "center", padding: "4rem 1.5rem", background: "var(--color-surface)", borderRadius: "var(--radius-xl)", border: "1px solid var(--color-border)" }}>
+            <Building2 size={36} strokeWidth={1.5} style={{ color: "var(--color-muted)", marginBottom: "1rem" }} />
+            <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.25rem", color: "var(--color-ink)", marginBottom: "0.5rem" }}>No services currently listed.</h2>
+            <p style={{ color: "var(--color-body-text)", fontSize: "0.9375rem" }}>Check back soon for updates to our studio offerings.</p>
+          </div>
+        )}
 
         {/* ── Bottom CTA ── */}
         <div className="svc-bottom-cta">

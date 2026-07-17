@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   Sparkles,
   Zap,
@@ -12,63 +13,7 @@ import {
 } from "lucide-react";
 import "./about.css";
 
-// ─── Demo Instructors — hardcoded, never written to Firestore ──────────────
-const DEMO_INSTRUCTORS = [
-  {
-    id: "inst-1",
-    name: "Kai Rivera",
-    role: "Lead Hip Hop Instructor",
-    style: "Hip Hop",
-    bio: "Former STEEZY Studio choreographer with 12+ years in hip-hop and urban choreography. Kai's teaching philosophy: feel first, clean later.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&q=80",
-  },
-  {
-    id: "inst-2",
-    name: "Mia Chen",
-    role: "Contemporary & Ballet Director",
-    style: "Ballet",
-    bio: "Classically trained at Juilliard with a decade of contemporary performance. Mia bridges technique and raw expression in every class.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80",
-  },
-  {
-    id: "inst-3",
-    name: "Dex Okafor",
-    role: "Breaking Coach",
-    style: "Breaking",
-    bio: "2x national breaking champion and Red Bull BC One competitor. Dex teaches power moves, footwork, and the culture behind them.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
-  },
-  {
-    id: "inst-4",
-    name: "Luna Park",
-    role: "Jazz Funk & Heels",
-    style: "Jazz Funk",
-    bio: "Luna has danced backup for major recording artists and brings fierce stage presence and musicality to every heels and jazz funk session.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80",
-  },
-  {
-    id: "inst-5",
-    name: "Marcus James",
-    role: "House & Social Dance",
-    style: "House",
-    bio: "A fixture of the NYC club scene for 15 years. Marcus teaches jacking, footwork, and lofting with an emphasis on musicality and freestyle.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80",
-  },
-  {
-    id: "inst-6",
-    name: "Anika Desai",
-    role: "Youth Programs Director",
-    style: "All Styles",
-    bio: "With a background in education and dance therapy, Anika designs age-appropriate curricula that build confidence and creative expression in young dancers.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80",
-  },
-];
+// ─── No Demo Fallback ──────────────────────────────────────────────
 
 // ─── Stats ──────────────────────────────────────────────────────────────────
 const STATS = [
@@ -80,6 +25,20 @@ const STATS = [
 
 // ─── Main Page ──────────────────────────────────────────────────────────────
 export default function AboutPage() {
+  const [instructors, setInstructors] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    setTimeout(() => {
+      if (!cancelled) {
+        setInstructors([]);
+        setLoading(false);
+      }
+    }, 500);
+    return () => { cancelled = true; };
+  }, []);
+
   return (
     <div className="about-page">
       {/* ── Hero ── */}
@@ -157,28 +116,40 @@ export default function AboutPage() {
           </p>
 
           <div className="abt-instructor-grid">
-            {DEMO_INSTRUCTORS.map((inst, i) => (
-              <article
-                className="abt-inst-card"
-                key={inst.id}
-                style={{ animationDelay: `${i * 0.07}s` }}
-              >
-                {/* Photo */}
-                <div className="abt-inst-img-wrap">
-                  <img src={inst.imageUrl} alt={inst.name} loading="lazy" />
-                </div>
+            {loading ? (
+              [1, 2, 3].map((i) => (
+                <div key={i} style={{ height: "380px", background: "var(--color-surface-alt)", borderRadius: "var(--radius-xl)", animation: "pulse 1.5s infinite" }} />
+              ))
+            ) : instructors.length > 0 ? (
+              instructors.map((inst, i) => (
+                <article
+                  className="abt-inst-card"
+                  key={inst.id}
+                  style={{ animationDelay: `${i * 0.07}s` }}
+                >
+                  {/* Photo */}
+                  <div className="abt-inst-img-wrap">
+                    <img src={inst.imageUrl} alt={inst.name} loading="lazy" />
+                  </div>
 
-                {/* Info */}
-                <div className="abt-inst-body">
-                  <span className="abt-inst-style-badge">
-                    {inst.style.toUpperCase()}
-                  </span>
-                  <h3 className="abt-inst-name">{inst.name}</h3>
-                  <span className="abt-inst-role">{inst.role}</span>
-                  <p className="abt-inst-bio">{inst.bio}</p>
-                </div>
-              </article>
-            ))}
+                  {/* Info */}
+                  <div className="abt-inst-body">
+                    <span className="abt-inst-style-badge">
+                      {inst.style.toUpperCase()}
+                    </span>
+                    <h3 className="abt-inst-name">{inst.name}</h3>
+                    <span className="abt-inst-role">{inst.role}</span>
+                    <p className="abt-inst-bio">{inst.bio}</p>
+                  </div>
+                </article>
+              ))
+            ) : (
+              <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "3rem", background: "var(--color-surface)", borderRadius: "var(--radius-xl)", border: "1px solid var(--color-border)" }}>
+                <Users size={36} strokeWidth={1.5} style={{ color: "var(--color-muted)", marginBottom: "1rem" }} />
+                <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.25rem", color: "var(--color-ink)", marginBottom: "0.5rem" }}>Faculty profiles coming soon.</h2>
+                <p style={{ color: "var(--color-body-text)", fontSize: "0.9375rem" }}>We are currently updating our instructor directory.</p>
+              </div>
+            )}
           </div>
         </section>
 

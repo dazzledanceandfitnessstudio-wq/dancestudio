@@ -17,93 +17,7 @@ import {
 } from "lucide-react";
 import "./courses.css";
 
-// ─── Demo fallback — never written to Firestore ────────────────────────────
-const DEMO_COURSES = [
-  {
-    id: "demo-c1",
-    title: "6-Week Hip Hop Fundamentals",
-    description:
-      "Build your foundation from the ground up. Learn grooves, isolations, and classic party moves in this structured beginner program.",
-    imageUrl:
-      "https://cdn.prod.website-files.com/5dbb40d6d8c97447e9450447/60baaab0aa12e6d9ad9074b6_STEEZY_HIPHOP-min.avif",
-    danceStyle: "Hip Hop",
-    level: "Beginner",
-    venue: "Studio A",
-    duration: "6 weeks",
-    maxParticipants: 30,
-    enrolledCount: 18,
-  },
-  {
-    id: "demo-c2",
-    title: "Intro to Contemporary Ballet",
-    description:
-      "A modern take on classical technique. Focus on fluidity, expression, and core strength through structured barre and center work.",
-    imageUrl:
-      "https://cdn.prod.website-files.com/5dbb40d6d8c97447e9450447/60baaab004cd38de543dd7a1_STEEZY_BALLET-min.avif",
-    danceStyle: "Ballet",
-    level: "All Levels",
-    venue: "Main Hall",
-    duration: "8 weeks",
-    maxParticipants: 20,
-    enrolledCount: 12,
-  },
-  {
-    id: "demo-c3",
-    title: "Jazz Funk Intensive",
-    description:
-      "High-energy choreography blending jazz technique with street-style attitude. Show up ready to sweat and perform.",
-    imageUrl:
-      "https://cdn.prod.website-files.com/5dbb40d6d8c97447e9450447/60baaab0f8caa4145fe07fef_STEEZY_JAZZ-min.avif",
-    danceStyle: "Jazz",
-    level: "Intermediate",
-    venue: "Studio B",
-    duration: "4 weeks",
-    maxParticipants: 25,
-    enrolledCount: 22,
-  },
-  {
-    id: "demo-c4",
-    title: "Breaking & Power Moves",
-    description:
-      "From top-rock entries to freeze combos — learn the vocabulary of breaking with progressive drills and creative rounds.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1547153760-18fc86324498?w=800&q=80",
-    danceStyle: "Breaking",
-    level: "Intermediate",
-    venue: "Studio C",
-    duration: "6 weeks",
-    maxParticipants: 15,
-    enrolledCount: 9,
-  },
-  {
-    id: "demo-c5",
-    title: "House Dance Foundations",
-    description:
-      "Explore jacking, footwork, and lofting patterns rooted in club culture. A feel-good, rhythm-first class for all bodies.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1504609813442-a8924e83f76e?w=800&q=80",
-    danceStyle: "House",
-    level: "Beginner",
-    venue: "Studio A",
-    duration: "5 weeks",
-    maxParticipants: 25,
-    enrolledCount: 7,
-  },
-  {
-    id: "demo-c6",
-    title: "Heels Choreography",
-    description:
-      "Confidence, sass, and sharp choreography — all in heels. Emphasis on performance quality, musicality, and stage presence.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&q=80",
-    danceStyle: "Heels",
-    level: "All Levels",
-    venue: "Main Hall",
-    duration: "4 weeks",
-    maxParticipants: 20,
-    enrolledCount: 16,
-  },
-];
+// ─── No Demo Fallback ────────────────────────────────────────────────────────
 
 // ─── Skeleton ───────────────────────────────────────────────────────────────
 function SkeletonCard() {
@@ -214,7 +128,7 @@ function CourseCard({ course, index }) {
 export default function CoursesPage() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [usingDemo, setUsingDemo] = useState(false);
+  const [error, setError] = useState(null);
   const [activeFilter, setActiveFilter] = useState("All");
 
   useEffect(() => {
@@ -228,13 +142,12 @@ export default function CoursesPage() {
         if (fetched && fetched.length > 0) {
           setCourses(fetched);
         } else {
-          setCourses(DEMO_COURSES);
-          setUsingDemo(true);
+          setCourses([]);
         }
-      } catch {
+      } catch (err) {
         if (!cancelled) {
-          setCourses(DEMO_COURSES);
-          setUsingDemo(true);
+          setCourses([]);
+          setError("Failed to load courses.");
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -284,11 +197,11 @@ export default function CoursesPage() {
       </header>
 
       <main className="crs-container">
-        {/* Demo notice */}
-        {!loading && usingDemo && (
-          <div className="crs-demo-notice" role="status">
+        {/* ── Error fallback notice ── */}
+        {error && (
+          <div className="crs-demo-notice" role="status" style={{color: "var(--color-primary)", borderColor: "rgba(255, 31, 109, 0.25)", background: "rgba(255, 31, 109, 0.08)"}}>
             <Sparkles size={14} strokeWidth={2} />
-            Showing demo content — connect to Firestore to load live courses.
+            {error}
           </div>
         )}
 
@@ -331,7 +244,7 @@ export default function CoursesPage() {
         )}
 
         {/* ── Empty ── */}
-        {!loading && filtered.length === 0 && (
+        {!loading && filtered.length === 0 && !error && (
           <div className="crs-empty">
             <div className="crs-empty-icon">
               <Search size={36} strokeWidth={1.5} />
