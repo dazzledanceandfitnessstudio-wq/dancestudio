@@ -350,7 +350,10 @@ export default function LandingPage() {
           </Link>
 
           <ul className="ld-nav-links">
+            <li><Link href="/courses">Courses</Link></li>
             <li><Link href="/events">Events</Link></li>
+            <li><Link href="/services">Services</Link></li>
+            <li><Link href="/posts">News</Link></li>
             <li><Link href="/dashboard">Dashboard</Link></li>
           </ul>
 
@@ -574,8 +577,23 @@ export default function LandingPage() {
             <div className="ld-footer-col">
               <h3>Quick Links</h3>
               <p>
+                <Link href="/courses" className="ld-social-link" style={{ textDecoration: "none" }}>
+                  Courses
+                </Link>
+              </p>
+              <p>
                 <Link href="/events" className="ld-social-link" style={{ textDecoration: "none" }}>
                   Classes & Events
+                </Link>
+              </p>
+              <p>
+                <Link href="/services" className="ld-social-link" style={{ textDecoration: "none" }}>
+                  Services & Rentals
+                </Link>
+              </p>
+              <p>
+                <Link href="/posts" className="ld-social-link" style={{ textDecoration: "none" }}>
+                  Studio News
                 </Link>
               </p>
               <p>
