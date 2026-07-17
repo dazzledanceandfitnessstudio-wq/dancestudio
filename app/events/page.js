@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   authService,
   eventService,
@@ -80,6 +80,9 @@ function EnrollmentCTA({
   onCancel,
   onSignIn,
 }) {
+  // FIX 1: Add null check for enrollmentMap[event.id]
+  const enrollment = event?.id ? enrollmentMap[event.id] : null;
+  
   const isFull =
     event.maxParticipants &&
     event.enrolledCount != null &&
@@ -101,7 +104,6 @@ function EnrollmentCTA({
 
   // Full event — always show full regardless of enrollment status
   if (isFull) {
-    const enrollment = enrollmentMap[event.id];
     // If already approved, still let them go to dashboard
     if (enrollment?.status === "APPROVED") {
       return (
@@ -122,8 +124,6 @@ function EnrollmentCTA({
       </div>
     );
   }
-
-  const enrollment = enrollmentMap[event.id];
 
   if (!enrollment) {
     // Not enrolled — can request
@@ -261,55 +261,144 @@ export default function EventsPage() {
   const buildEnrollmentMap = useCallback((enrollments) => {
     const map = {};
     enrollments.forEach((en) => {
-      map[en.eventId] = { id: en.id, status: en.status };
+      if (en.eventId) { // FIX 2: Ensure eventId exists
+        map[en.eventId] = { id: en.id, status: en.status };
+      }
     });
     return map;
   }, []);
 
+  // ── FIX 3: Add a function to fetch all data ──
+  const fetchAllData = useCallback(async (currentUser = null) => {
+    try {
+      // Always fetch events (public)
+      const allEvents = await eventService.getAllEvents();
+      setEvents(allEvents);
+
+      // If signed in, fetch enrollments for the map
+      if (currentUser) {
+        try {
+          const enrollments = await enrollmentService.getUserEnrollments(
+            currentUser.uid
+          );
+          setEnrollmentMap(buildEnrollmentMap(enrollments));
+        } catch (err) {
+          console.error("Failed to fetch enrollments:", err);
+          // Non-critical: enrollment status won't show, but events still render
+        }
+      } else {
+        setEnrollmentMap({}); // Clear enrollment map when signed out
+      }
+    } catch (err) {
+      console.error("Failed to fetch events:", err);
+      setError("Failed to load events. Please try refreshing.");
+      throw err;
+    }
+  }, [buildEnrollmentMap]);
+
   // ── Initial fetch ──
   useEffect(() => {
-    let cancelled = false;
+    let mounted = true;
 
     (async () => {
       try {
-        // Always fetch events (public)
-        const allEvents = await eventService.getAllEvents();
-        if (cancelled) return;
-        setEvents(allEvents);
-
-        // Check auth
+        setLoading(true);
+        // Check auth first
         const currentUser = await authService.getCurrentUser();
-        if (cancelled) return;
+        if (!mounted) return;
         setUser(currentUser);
 
-        // If signed in, fetch enrollments for the map
-        if (currentUser) {
-          try {
-            const enrollments = await enrollmentService.getUserEnrollments(
-              currentUser.uid
-            );
-            if (cancelled) return;
-            setEnrollmentMap(buildEnrollmentMap(enrollments));
-          } catch {
-            // Non-critical: enrollment status won't show, but events still render
-          }
-        }
+        await fetchAllData(currentUser);
       } catch (err) {
-        if (!cancelled) {
-          setError("Failed to load events. Please try refreshing.");
-        }
+        if (!mounted) return;
+        setError(err.message || "Failed to load events");
       } finally {
-        if (!cancelled) setLoading(false);
+        if (mounted) setLoading(false);
       }
     })();
 
     return () => {
-      cancelled = true;
+      mounted = false;
     };
+  }, [fetchAllData]);
+
+  // ── FIX 5: Add auth state listener using Firebase auth directly ──
+  useEffect(() => {
+    // Check if authService has the auth instance exposed
+    // Most authService wrappers expose the Firebase auth instance
+    const firebaseAuth = authService.auth || authService.getAuth?.();
+    
+    if (firebaseAuth && typeof firebaseAuth.onAuthStateChanged === 'function') {
+      const unsubscribe = firebaseAuth.onAuthStateChanged(async (authUser) => {
+        setUser(authUser);
+        if (authUser) {
+          try {
+            const enrollments = await enrollmentService.getUserEnrollments(
+              authUser.uid
+            );
+            setEnrollmentMap(buildEnrollmentMap(enrollments));
+          } catch (err) {
+            console.error("Failed to fetch enrollments after auth change:", err);
+          }
+        } else {
+          setEnrollmentMap({});
+        }
+      });
+
+      return () => {
+        if (unsubscribe) unsubscribe();
+      };
+    } else {
+      // Fallback: poll for auth state changes
+      console.warn("onAuthStateChanged not available, using polling fallback");
+      let authCheckInterval = setInterval(async () => {
+        try {
+          const currentUser = await authService.getCurrentUser();
+          setUser(currentUser);
+        } catch (err) {
+          console.error("Auth polling error:", err);
+        }
+      }, 5000);
+
+      return () => {
+        if (authCheckInterval) clearInterval(authCheckInterval);
+      };
+    }
   }, [buildEnrollmentMap]);
 
+  // ── FIX 6: Add real-time event listener ──
+  useEffect(() => {
+    // Check if eventService has the onEventsChanged method
+    if (typeof eventService.onEventsChanged === 'function') {
+      const unsubscribe = eventService.onEventsChanged((updatedEvents) => {
+        if (updatedEvents) {
+          setEvents(updatedEvents);
+        }
+      });
+
+      return () => {
+        if (unsubscribe) unsubscribe();
+      };
+    } else {
+      // Fallback: poll for event changes
+      console.warn("onEventsChanged not available, using polling fallback");
+      let eventCheckInterval = setInterval(async () => {
+        try {
+          const allEvents = await eventService.getAllEvents();
+          setEvents(allEvents);
+        } catch (err) {
+          console.error("Event polling error:", err);
+        }
+      }, 10000);
+
+      return () => {
+        if (eventCheckInterval) clearInterval(eventCheckInterval);
+      };
+    }
+  }, []);
+
   // ── Actions ──
-  const handleSignIn = async () => {
+  const handleSignIn = useCallback(async () => {
     try {
       const result = await authService.signInWithGoogle();
       if (result.success) {
@@ -320,20 +409,25 @@ export default function EventsPage() {
             result.user.uid
           );
           setEnrollmentMap(buildEnrollmentMap(enrollments));
-        } catch {
-          // Non-critical
+        } catch (err) {
+          console.error("Failed to fetch enrollments after sign in:", err);
         }
         showToast("Signed in successfully");
       } else {
         showToast(result.error || "Sign in failed", "error");
       }
-    } catch {
+    } catch (err) {
+      console.error("Sign in error:", err);
       showToast("Sign in failed", "error");
     }
-  };
+  }, [buildEnrollmentMap, showToast]);
 
-  const handleEnroll = async (eventId) => {
-    if (!user) return;
+  const handleEnroll = useCallback(async (eventId) => {
+    if (!user) {
+      showToast("Please sign in first", "error");
+      return;
+    }
+    
     setEnrollingId(eventId);
     try {
       const result = await enrollmentService.requestEnrollment(
@@ -347,13 +441,14 @@ export default function EventsPage() {
       }));
       showToast("Enrollment request sent!");
     } catch (err) {
+      console.error("Enrollment error:", err);
       showToast(err.message || "Failed to enroll", "error");
     } finally {
       setEnrollingId(null);
     }
-  };
+  }, [user, showToast]);
 
-  const handleCancel = async (enrollmentId, eventId) => {
+  const handleCancel = useCallback(async (enrollmentId, eventId) => {
     setCancellingId(enrollmentId);
     try {
       await enrollmentService.cancelEnrollment(enrollmentId, eventId);
@@ -364,27 +459,29 @@ export default function EventsPage() {
         return next;
       });
       showToast("Enrollment request cancelled");
-    } catch {
+    } catch (err) {
+      console.error("Cancel error:", err);
       showToast("Failed to cancel request", "error");
     } finally {
       setCancellingId(null);
     }
-  };
+  }, [showToast]);
 
   // ── Derived data ──
-  const danceStyles = [
-    "All",
-    ...new Set(events.map((e) => e.danceStyle).filter(Boolean)),
-  ];
+  const danceStyles = useMemo(() => {
+    return [
+      "All",
+      ...new Set(events.map((e) => e.danceStyle).filter(Boolean)),
+    ];
+  }, [events]);
 
-  const filteredEvents =
-    activeFilter === "All"
+  const filteredEvents = useMemo(() => {
+    return activeFilter === "All"
       ? events
       : events.filter((e) => e.danceStyle === activeFilter);
+  }, [events, activeFilter]);
 
-  // ─────────────────────────────────────────────────────────
-  // RENDER: Loading
-  // ─────────────────────────────────────────────────────────
+  // ── Handle loading state properly ──
   if (loading) {
     return (
       <div className={themeClass}>
