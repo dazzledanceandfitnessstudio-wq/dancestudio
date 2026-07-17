@@ -19,25 +19,36 @@ Dazzle's audience spans total beginners to advanced dancers, taking hip-hop, bre
 
 ## Color System
 
-Dark-first, neon-accented, high contrast. The background is the stage floor at night; the accent colors are the spotlights.
+### 1. Default Tokens (Light Mode)
+The Light Mode relies on crisp white surfaces against a very subtle, warm lavender-tinted background, allowing the neon accents and dark charcoal text to pop aggressively.
 
 | Token | Hex | Use |
 |---|---|---|
-| `--color-bg` | `#0B0A0F` | Primary page background — near-black with a violet undertone, never flat `#000000` |
-| `--color-surface` | `#16131D` | Card / panel surface, sits just above bg |
-| `--color-surface-alt` | `#1E1929` | Alternating section band, slightly lighter than surface |
-| `--color-border` | `#2C2438` | Hairline borders, dividers on dark surfaces |
-| `--color-ink` | `#F5F3F7` | Primary text on dark — warm off-white, not pure white |
-| `--color-body-text` | `#B8AFC7` | Secondary/body text on dark |
-| `--color-primary` | `#FF1F6D` | Primary CTA / hero accent — hot magenta, the main spotlight color |
-| `--color-primary-dark` | `#D6135A` | Primary hover/active state |
-| `--color-secondary` | `#C6FF3D` | Secondary accent — acid/electric lime, energy hits, underlines, active states |
-| `--color-tertiary` | `#00E5FF` | Third accent — electric cyan, sparingly, for links/info/live indicators |
-| `--color-warn-yellow` | `#FFE600` | Sparingly — "live now" / urgent tags only |
+| `--color-bg` | `#F5F2FA` | Primary page background — cool-toned, soft lavender near-white |
+| `--color-surface` | `#FFFFFF` | Card / panel surface, pristine white |
+| `--color-surface-alt` | `#F8F9FA` | Alternating section band, subtle off-white |
+| `--color-border` | `#E5E0EA` | Hairline borders, dividers on light surfaces |
+| `--color-ink` | `#1A1523` | Primary text — deep charcoal-violet, never flat black |
+| `--color-body-text` | `#4A4356` | Secondary/body text on light |
 
-**Gradient:** one signature gradient, used as an accent, never a full-bleed background: `linear-gradient(135deg, #FF1F6D 0%, #7B2FFF 100%)` — magenta into violet. Use on a CTA button fill, a thin glow-edge behind a headline, or a gradient ring around an instructor avatar. A second gradient, `#C6FF3D → #00E5FF` (lime into cyan), is fine for a badge or hover glow — don't use it as a section background.
+### 2. Dark Mode Tokens
+| Token | Hex | Use |
+|---|---|---|
+| `--color-bg-dark` | `#0B0A0F` | Primary background — near-black with a violet undertone |
+| `--color-surface-dark` | `#16131D` | Card / panel surface |
+| `--color-ink-dark` | `#F5F3F7` | Primary text on dark — warm off-white |
+| `--color-body-text-dark` | `#B8AFC7` | Secondary/body text on dark |
 
-**Light surfaces:** used sparingly and deliberately, for reading rest — e.g. a long-form blog post, a form section. Use `--color-bg-light: #F5F2FA` (cool-toned near-white) with `--color-ink-on-light: #171321`. Roughly 70% dark surface : 20% ink/body text : 10% saturated accent overall — the accent is a spotlight, not the whole show.
+### 3. Accent Colors (Used in Both Themes)
+| Token | Hex | Use |
+|---|---|---|
+| `--color-primary` | `#FF1F6D` | Hot magenta — left side of gradient, hover states |
+| `--color-secondary` | `#C6FF3D` | Acid Lime — use for "BEGINNER" tags, active toggle pills, energy hits |
+| `--color-tertiary` | `#00E5FF` | Electric Cyan — right side of gradient, links, focus rings |
+| `--color-warn-yellow` | `#FFE600` | Sparingly — "LIVE NOW" / urgent tags only |
+
+**The Signature Gradient (CTAs):**
+Primary buttons MUST use this exact gradient to match the vibrant, high-energy brand identity: `linear-gradient(90deg, #FF1F6D 0%, #00E5FF 100%)`. This transitions horizontally from hot magenta to electric cyan.
 
 ---
 
@@ -111,6 +122,14 @@ Favor real photo/video of dancers and classes, color-graded cool/high-contrast s
 
 ---
 
+## Imagery & Icons
+
+* **Icons:** strictly use `lucide-react` SVG icons. Banish all emojis. 
+* **Media:** Favor high-contrast, professional dance photography. 
+* **Hero Section:** Must feature a split-layout with a high-energy looping dance GIF on the left, and massive typography on the right.
+
+---
+
 ## Page-specific notes
 
 - **Home (`page.js`):** Dark hero, bold gradient-accented headline, styles/categories grid or marquee, "how it works" feature row, one testimonials band, stats band, footer.
@@ -129,9 +148,11 @@ Spend the boldness in the color/light system — that's the one thing this page 
 
 ## Anti-patterns (avoid)
 
+- Emojis in the UI (always use proper SVG icons).
 - Warm cream/pastel backgrounds, soft muted accents — reads as wellness/beauty brand, not street dance.
 - Flat pure-black (`#000`) or pure-white (`#FFF`) as a large fill.
 - Gray drop-shadows on dark surfaces (use glow-shadows instead).
+-Forgetting to invert text colors when toggling between Light and Dark modes.
 - Square/sharp-cornered cards or buttons.
 - The gradient as a full-bleed background fill rather than an accent.
 - Thin, cold, line-icon-heavy UI.
