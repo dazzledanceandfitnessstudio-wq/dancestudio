@@ -301,9 +301,14 @@
   letter-spacing: 0.06em;
 }
 
+.btn-enroll-neon {
+  background-color: #C6FF3D; 
+  color: #1A1523; 
+}
+
 .btn-enroll-neon:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 25px rgba(57, 255, 20, 0.6);
+  box-shadow: 0 0 25px rgba(198, 255, 61, 0.6);
 }
 
 .btn-enroll-neon:disabled {
