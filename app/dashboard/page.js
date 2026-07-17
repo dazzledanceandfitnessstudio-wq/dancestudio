@@ -32,7 +32,8 @@ import {
   XCircle,
   Loader2,
 } from "lucide-react";
-import "./dashboard.css";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 // ─── Helpers ───────────────────────────────────────────────
 function formatDate(timestamp) {
@@ -449,6 +450,7 @@ export default function DashboardPage() {
   // ─────────────────────────────────────────────────────────
   return (
     <div className={themeClass}>
+      <Header user={user} onSignOut={handleSignOut} />
       <div className="dash-container">
         {/* ── Error Banner ── */}
         {error && (
@@ -856,6 +858,7 @@ export default function DashboardPage() {
         type={toast.type}
         visible={toast.visible}
       />
+      <Footer />
     </div>
   );
 }

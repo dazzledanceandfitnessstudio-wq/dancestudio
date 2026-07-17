@@ -13,7 +13,8 @@ import {
   Mail,
   Phone,
 } from "lucide-react";
-import "./services.css";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 // ─── No Demo Fallback ────────────────────────────────────────────────────────
 
@@ -101,6 +102,7 @@ export default function ServicesPage() {
 
   return (
     <div className="services-page">
+      <Header />
       {/* ── Hero ── */}
       <header className="svc-hero">
         <div className="svc-hero-inner">
@@ -170,6 +172,7 @@ export default function ServicesPage() {
           </a>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

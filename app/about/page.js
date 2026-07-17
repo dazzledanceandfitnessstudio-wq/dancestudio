@@ -11,7 +11,8 @@ import {
   Star,
   ArrowRight,
 } from "lucide-react";
-import "./about.css";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 // ─── No Demo Fallback ──────────────────────────────────────────────
 
@@ -41,6 +42,7 @@ export default function AboutPage() {
 
   return (
     <div className="about-page">
+      <Header />
       {/* ── Hero ── */}
       <header className="abt-hero">
         <div className="abt-hero-split">
@@ -172,6 +174,7 @@ export default function AboutPage() {
           </div>
         </section>
       </main>
+      <Footer />
     </div>
   );
 }

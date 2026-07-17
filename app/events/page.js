@@ -26,7 +26,8 @@ import {
   Sun,
   Moon,
 } from "lucide-react";
-import "./events.css";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 // ─── Helpers ───────────────────────────────────────────────
 function formatDate(timestamp) {
@@ -503,6 +504,7 @@ export default function EventsPage() {
   // ─────────────────────────────────────────────────────────
   return (
     <div className={themeClass}>
+      <Header user={user} onSignIn={handleSignIn} />
       <div className="ev-container">
         {/* ── Error Banner ── */}
         {error && (
@@ -677,6 +679,7 @@ export default function EventsPage() {
         type={toast.type}
         visible={toast.visible}
       />
+      <Footer />
     </div>
   );
 }

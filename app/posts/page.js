@@ -11,7 +11,8 @@ import {
   AlertTriangle,
   Sparkles,
 } from "lucide-react";
-import "./posts.css";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 // ─── No Demo Fallback ──────────────────────────────────────────
 
@@ -171,6 +172,7 @@ export default function PostsPage() {
   // ─────────────────────────────────────────────────────────────────
   return (
     <div className="posts-page">
+      <Header />
       {/* ── Hero ── */}
       <header className="posts-hero">
         <div className="posts-hero-inner">
@@ -266,6 +268,7 @@ export default function PostsPage() {
           </div>
         )}
       </main>
+      <Footer />
     </div>
   );
 }

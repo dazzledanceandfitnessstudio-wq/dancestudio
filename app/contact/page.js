@@ -12,7 +12,8 @@ import {
   Sparkles,
   ArrowRight,
 } from "lucide-react";
-import "./contact.css";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 // ─── Toast ──────────────────────────────────────────────────────────────────
 function Toast({ message, type, visible }) {
@@ -104,6 +105,7 @@ export default function ContactPage() {
 
   return (
     <div className="contact-page">
+      <Header />
       {/* ── Hero ── */}
       <header className="ct-hero">
         <div className="ct-hero-inner">
@@ -272,6 +274,7 @@ export default function ContactPage() {
       </main>
 
       <Toast message={toast.message} type={toast.type} visible={toast.visible} />
+      <Footer />
     </div>
   );
 }

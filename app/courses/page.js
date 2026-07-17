@@ -15,7 +15,8 @@ import {
   Calendar,
   Tag,
 } from "lucide-react";
-import "./courses.css";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 // ─── No Demo Fallback ────────────────────────────────────────────────────────
 
@@ -173,6 +174,7 @@ export default function CoursesPage() {
   // ────────────────────────────────────────────────────────────────
   return (
     <div className="courses-page">
+      <Header />
       {/* ── Hero ── */}
       <header className="crs-hero">
         <div className="crs-hero-inner">
@@ -271,6 +273,7 @@ export default function CoursesPage() {
           </div>
         )}
       </main>
+      <Footer />
     </div>
   );
 }
