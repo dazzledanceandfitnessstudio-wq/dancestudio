@@ -354,6 +354,8 @@ export default function LandingPage() {
             <li><Link href="/events">Events</Link></li>
             <li><Link href="/services">Services</Link></li>
             <li><Link href="/posts">News</Link></li>
+            <li><Link href="/about">About</Link></li>
+            <li><Link href="/contact">Contact</Link></li>
             <li><Link href="/dashboard">Dashboard</Link></li>
           </ul>
 
@@ -594,6 +596,16 @@ export default function LandingPage() {
               <p>
                 <Link href="/posts" className="ld-social-link" style={{ textDecoration: "none" }}>
                   Studio News
+                </Link>
+              </p>
+              <p>
+                <Link href="/about" className="ld-social-link" style={{ textDecoration: "none" }}>
+                  About Us
+                </Link>
+              </p>
+              <p>
+                <Link href="/contact" className="ld-social-link" style={{ textDecoration: "none" }}>
+                  Contact
                 </Link>
               </p>
               <p>
