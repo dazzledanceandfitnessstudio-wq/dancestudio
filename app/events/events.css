@@ -5,14 +5,14 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500&display=swap');
 
-/* ---------- Design Tokens (scoped) ---------- */
+/* ---------- Design Tokens (Light Mode — Default) ---------- */
 .events-page {
-  --color-bg: #0B0A0F;
-  --color-surface: #16131D;
-  --color-surface-alt: #1E1929;
-  --color-border: #2C2438;
-  --color-ink: #F5F3F7;
-  --color-body-text: #B8AFC7;
+  --color-bg: #F5F2FA;
+  --color-surface: #FFFFFF;
+  --color-surface-alt: #F8F9FA;
+  --color-border: #E5E0EA;
+  --color-ink: #1A1523;
+  --color-body-text: #4A4356;
   --color-primary: #FF1F6D;
   --color-primary-dark: #D6135A;
   --color-secondary: #C6FF3D;
@@ -20,15 +20,15 @@
   --color-warn-yellow: #FFE600;
 
   --gradient-primary: linear-gradient(135deg, #FF1F6D 0%, #7B2FFF 100%);
-  --gradient-cta: linear-gradient(135deg, #FF1F6D 0%, #00E5FF 100%);
+  --gradient-cta: linear-gradient(90deg, #FF1F6D 0%, #00E5FF 100%);
   --gradient-secondary: linear-gradient(135deg, #C6FF3D 0%, #00E5FF 100%);
 
-  --glow-primary: 0 0 24px rgba(255, 31, 109, 0.15);
-  --glow-primary-hover: 0 0 32px rgba(255, 31, 109, 0.35);
-  --glow-cta: 0 0 15px rgba(255, 31, 109, 0.4);
-  --glow-cta-hover: 0 0 28px rgba(255, 31, 109, 0.5), 0 0 12px rgba(0, 229, 255, 0.25);
-  --glow-secondary: 0 0 20px rgba(198, 255, 61, 0.12);
-  --glow-tertiary: 0 0 20px rgba(0, 229, 255, 0.12);
+  --glow-primary: 0 4px 20px rgba(255, 31, 109, 0.10);
+  --glow-primary-hover: 0 6px 28px rgba(255, 31, 109, 0.18);
+  --glow-cta: 0 4px 12px rgba(255, 31, 109, 0.20);
+  --glow-cta-hover: 0 6px 20px rgba(255, 31, 109, 0.30), 0 4px 10px rgba(0, 229, 255, 0.15);
+  --glow-secondary: 0 4px 16px rgba(100, 180, 30, 0.08);
+  --glow-tertiary: 0 4px 16px rgba(0, 180, 220, 0.08);
 
   --radius-xl: 14px;
   --radius-btn: 10px;
@@ -41,6 +41,62 @@
   color: var(--color-ink);
   background: var(--color-bg);
   min-height: 100vh;
+  transition: background 0.35s ease, color 0.35s ease;
+}
+
+/* ---------- Dark Mode Override ---------- */
+.events-page-dark {
+  --color-bg: #0B0A0F;
+  --color-surface: #16131D;
+  --color-surface-alt: #1E1929;
+  --color-border: #2C2438;
+  --color-ink: #F5F3F7;
+  --color-body-text: #B8AFC7;
+
+  --glow-primary: 0 0 24px rgba(255, 31, 109, 0.15);
+  --glow-primary-hover: 0 0 32px rgba(255, 31, 109, 0.35);
+  --glow-cta: 0 0 15px rgba(255, 31, 109, 0.4);
+  --glow-cta-hover: 0 0 28px rgba(255, 31, 109, 0.5), 0 0 12px rgba(0, 229, 255, 0.25);
+  --glow-secondary: 0 0 20px rgba(198, 255, 61, 0.12);
+  --glow-tertiary: 0 0 20px rgba(0, 229, 255, 0.12);
+}
+
+/* Dark mode badge overrides */
+.events-page-dark .ev-badge-style {
+  background: rgba(0, 229, 255, 0.12);
+  color: var(--color-tertiary);
+}
+
+.events-page-dark .ev-badge-active {
+  background: rgba(198, 255, 61, 0.15);
+  color: var(--color-secondary);
+}
+
+.events-page-dark .ev-badge-full {
+  background: rgba(255, 31, 109, 0.10);
+  color: #c97a8e;
+}
+
+.events-page-dark .ev-badge-level {
+  background: rgba(123, 47, 255, 0.12);
+  color: #B57FFF;
+}
+
+.events-page-dark .ev-filter-active {
+  background: var(--color-secondary);
+  color: #0B0A0F;
+  border-color: var(--color-secondary);
+}
+
+.events-page-dark .ev-btn-full {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.06);
+  color: #7a6e8f;
+}
+
+.events-page-dark .ev-hero-count {
+  color: var(--color-secondary);
+  background: rgba(198, 255, 61, 0.10);
 }
 
 /* ---------- Typography ---------- */
@@ -117,8 +173,8 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--color-secondary);
-  background: rgba(198, 255, 61, 0.1);
+  color: #3D8C1C;
+  background: rgba(80, 160, 20, 0.10);
   padding: 0.3rem 0.875rem;
   border-radius: var(--radius-pill);
 }
@@ -153,15 +209,15 @@
 }
 
 .ev-filter-active {
-  background: var(--color-secondary);
-  color: #0B0A0F;
-  border-color: var(--color-secondary);
+  background: #C6FF3D;
+  color: #1A1523;
+  border-color: #C6FF3D;
   font-weight: 700;
 }
 
 .ev-filter-active:hover {
-  color: #0B0A0F;
-  border-color: var(--color-secondary);
+  color: #1A1523;
+  border-color: #C6FF3D;
 }
 
 /* ---------- Card Grid ---------- */
@@ -174,7 +230,7 @@
 /* ---------- Event Card ---------- */
 .ev-card {
   background: var(--color-surface);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   overflow: hidden;
   display: flex;
@@ -424,13 +480,13 @@
   justify-content: center;
   gap: 0.5rem;
   width: 100%;
-  background: rgba(255, 255, 255, 0.03);
-  color: #7a6e8f;
+  background: rgba(0, 0, 0, 0.04);
+  color: #9e96b0;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 0.875rem;
   padding: 0.6875rem 1.5rem;
-  border: 1.5px solid rgba(255, 255, 255, 0.06);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-xl);
   cursor: not-allowed;
 }
@@ -468,24 +524,25 @@
   white-space: nowrap;
 }
 
+/* Light mode badge defaults */
 .ev-badge-style {
-  background: rgba(0, 229, 255, 0.12);
-  color: var(--color-tertiary);
+  background: rgba(0, 180, 220, 0.10);
+  color: #0097A7;
 }
 
 .ev-badge-level {
-  background: rgba(123, 47, 255, 0.12);
-  color: #B57FFF;
+  background: rgba(123, 47, 255, 0.08);
+  color: #7B2FFF;
 }
 
 .ev-badge-active {
-  background: rgba(198, 255, 61, 0.15);
-  color: var(--color-secondary);
+  background: rgba(80, 160, 20, 0.12);
+  color: #3D8C1C;
 }
 
 .ev-badge-full {
-  background: rgba(255, 31, 109, 0.1);
-  color: #c97a8e;
+  background: rgba(255, 31, 109, 0.08);
+  color: #A04040;
 }
 
 /* ---------- Empty State ---------- */
@@ -498,7 +555,7 @@
   padding: 4rem 1.5rem;
   gap: 1rem;
   background: var(--color-surface);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
 }
 
@@ -610,6 +667,31 @@
 /* ---------- Spinner ---------- */
 .ev-spin {
   animation: evSpin 0.8s linear infinite;
+}
+
+/* ---------- Theme Toggle Button ---------- */
+.ev-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: transparent;
+  color: var(--color-body-text);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+}
+
+.ev-theme-toggle:hover {
+  border-color: var(--color-ink);
+  color: var(--color-ink);
 }
 
 /* ---------- Animations ---------- */

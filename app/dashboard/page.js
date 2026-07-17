@@ -122,7 +122,7 @@ export default function DashboardPage() {
   const [cancellingId, setCancellingId] = useState(null);
   const [toast, setToast] = useState({ message: "", type: "", visible: false });
   const [activeTab, setActiveTab] = useState("active");
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
 
   // ── Toast helper ──
   const showToast = useCallback((message, type = "success") => {
@@ -383,7 +383,7 @@ export default function DashboardPage() {
   );
 
   // Theme class
-  const themeClass = darkMode ? "dashboard" : "dashboard dashboard-light";
+  const themeClass = darkMode ? "dashboard dashboard-dark" : "dashboard";
 
   // ─────────────────────────────────────────────────────────
   // RENDER: Sign-In Prompt

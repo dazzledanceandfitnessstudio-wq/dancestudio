@@ -6,32 +6,30 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500&display=swap');
 
-/* ---------- Design Tokens ---------- */
+/* ---------- Design Tokens (Light Mode — Default) ---------- */
 .dashboard {
-  --color-bg: #0B0A0F;
-  --color-surface: #16131D;
-  --color-surface-alt: #1E1929;
-  --color-border: #2C2438;
-  --color-ink: #F5F3F7;
-  --color-body-text: #B8AFC7;
+  --color-bg: #F5F2FA;
+  --color-surface: #FFFFFF;
+  --color-surface-alt: #F8F9FA;
+  --color-border: #E5E0EA;
+  --color-ink: #1A1523;
+  --color-body-text: #4A4356;
   --color-primary: #FF1F6D;
   --color-primary-dark: #D6135A;
   --color-secondary: #C6FF3D;
   --color-tertiary: #00E5FF;
   --color-warn-yellow: #FFE600;
-  --color-bg-light: #F5F2FA;
-  --color-ink-on-light: #171321;
 
   --gradient-primary: linear-gradient(135deg, #FF1F6D 0%, #7B2FFF 100%);
-  --gradient-cta: linear-gradient(135deg, #FF1F6D 0%, #00E5FF 100%);
+  --gradient-cta: linear-gradient(90deg, #FF1F6D 0%, #00E5FF 100%);
   --gradient-secondary: linear-gradient(135deg, #C6FF3D 0%, #00E5FF 100%);
 
-  --glow-primary: 0 0 24px rgba(255, 31, 109, 0.15);
-  --glow-primary-hover: 0 0 32px rgba(255, 31, 109, 0.35);
-  --glow-secondary: 0 0 20px rgba(198, 255, 61, 0.12);
-  --glow-tertiary: 0 0 20px rgba(0, 229, 255, 0.12);
-  --glow-cta: 0 0 15px rgba(255, 31, 109, 0.4);
-  --glow-cta-hover: 0 0 28px rgba(255, 31, 109, 0.5), 0 0 12px rgba(0, 229, 255, 0.25);
+  --glow-primary: 0 4px 20px rgba(255, 31, 109, 0.10);
+  --glow-primary-hover: 0 6px 28px rgba(255, 31, 109, 0.18);
+  --glow-secondary: 0 4px 16px rgba(100, 180, 30, 0.08);
+  --glow-tertiary: 0 4px 16px rgba(0, 180, 220, 0.08);
+  --glow-cta: 0 4px 12px rgba(255, 31, 109, 0.20);
+  --glow-cta-hover: 0 6px 20px rgba(255, 31, 109, 0.30), 0 4px 10px rgba(0, 229, 255, 0.15);
 
   --radius-card: 14px;
   --radius-btn: 10px;
@@ -50,47 +48,60 @@
   transition: background 0.35s ease, color 0.35s ease;
 }
 
-/* ---------- Light Mode Override ---------- */
-.dashboard-light {
-  --color-bg: #F5F2FA;
-  --color-surface: #FFFFFF;
-  --color-surface-alt: #ECE8F4;
-  --color-border: #D8D0E6;
-  --color-ink: #171321;
-  --color-body-text: #5A5073;
-  --color-bg-light: #FFFFFF;
+/* ---------- Dark Mode Override ---------- */
+.dashboard-dark {
+  --color-bg: #0B0A0F;
+  --color-surface: #16131D;
+  --color-surface-alt: #1E1929;
+  --color-border: #2C2438;
+  --color-ink: #F5F3F7;
+  --color-body-text: #B8AFC7;
 
-  --glow-primary: 0 4px 20px rgba(255, 31, 109, 0.08);
-  --glow-primary-hover: 0 6px 28px rgba(255, 31, 109, 0.15);
-  --glow-secondary: 0 4px 16px rgba(100, 180, 30, 0.08);
-  --glow-tertiary: 0 4px 16px rgba(0, 180, 220, 0.08);
-  --glow-cta: 0 4px 12px rgba(255, 31, 109, 0.2);
-  --glow-cta-hover: 0 6px 20px rgba(255, 31, 109, 0.3);
+  --glow-primary: 0 0 24px rgba(255, 31, 109, 0.15);
+  --glow-primary-hover: 0 0 32px rgba(255, 31, 109, 0.35);
+  --glow-secondary: 0 0 20px rgba(198, 255, 61, 0.12);
+  --glow-tertiary: 0 0 20px rgba(0, 229, 255, 0.12);
+  --glow-cta: 0 0 15px rgba(255, 31, 109, 0.4);
+  --glow-cta-hover: 0 0 28px rgba(255, 31, 109, 0.5), 0 0 12px rgba(0, 229, 255, 0.25);
 }
 
-.dashboard-light .gradient-text {
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.dashboard-dark .badge-style {
+  background: rgba(0, 229, 255, 0.12);
+  color: var(--color-tertiary);
 }
 
-.dashboard-light .badge-style {
-  background: rgba(0, 180, 220, 0.1);
+.dashboard-dark .badge-approved {
+  background: rgba(198, 255, 61, 0.15);
+  color: var(--color-secondary);
+}
+
+.dashboard-dark .badge-pending {
+  background: rgba(255, 31, 109, 0.15);
+  color: var(--color-primary);
+}
+
+.dashboard-dark .badge-rejected {
+  background: rgba(255, 31, 109, 0.1);
+  color: #c97a8e;
+}
+
+/* Light mode badge overrides */
+.badge-style {
+  background: rgba(0, 180, 220, 0.10);
   color: #0097A7;
 }
 
-.dashboard-light .badge-approved {
-  background: rgba(80, 160, 20, 0.1);
+.badge-approved {
+  background: rgba(80, 160, 20, 0.12);
   color: #3D8C1C;
 }
 
-.dashboard-light .badge-pending {
+.badge-pending {
   background: rgba(255, 31, 109, 0.08);
   color: var(--color-primary);
 }
 
-.dashboard-light .badge-rejected {
+.badge-rejected {
   background: rgba(200, 50, 50, 0.08);
   color: #A04040;
 }
@@ -165,7 +176,7 @@
 /* ---------- Cards (sharper, premium) ---------- */
 .dash-card {
   background: var(--color-surface);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   padding: 1.5rem;
   transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
@@ -177,7 +188,7 @@
 
 .dash-card-hero {
   background: var(--color-surface);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   padding: 2rem;
   position: relative;
@@ -197,7 +208,7 @@
 /* ---------- Stat Cards (premium) ---------- */
 .dash-stat-card {
   background: var(--color-surface);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   padding: 1.25rem 1.5rem;
   display: flex;
@@ -486,13 +497,13 @@
 }
 
 .segment-active {
-  background: var(--color-secondary);
-  color: #0B0A0F;
+  background: #C6FF3D;
+  color: #1A1523;
   font-weight: 700;
 }
 
 .segment-active:hover {
-  color: #0B0A0F;
+  color: #1A1523;
 }
 
 /* ---------- Badges ---------- */
@@ -509,25 +520,7 @@
   white-space: nowrap;
 }
 
-.badge-approved {
-  background: rgba(198, 255, 61, 0.15);
-  color: var(--color-secondary);
-}
-
-.badge-pending {
-  background: rgba(255, 31, 109, 0.15);
-  color: var(--color-primary);
-}
-
-.badge-rejected {
-  background: rgba(255, 31, 109, 0.1);
-  color: #c97a8e;
-}
-
-.badge-style {
-  background: rgba(0, 229, 255, 0.12);
-  color: var(--color-tertiary);
-}
+/* Base (light) badge styles are set in the overrides block above */
 
 .badge-live {
   background: rgba(255, 230, 0, 0.15);
@@ -660,7 +653,7 @@
 /* ---------- Event Cards (premium) ---------- */
 .event-card {
   background: var(--color-surface);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   overflow: hidden;
   transition: box-shadow 0.25s ease-out, transform 0.25s ease-out;
@@ -758,7 +751,7 @@
   gap: 1rem;
   padding: 0.75rem 1rem;
   background: var(--color-surface);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-btn);
   flex-wrap: wrap;
   transition: box-shadow 0.2s ease-out;
@@ -790,7 +783,7 @@
 /* ---------- Pending / Rejected Cards ---------- */
 .pending-card {
   background: var(--color-surface);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   padding: 1.25rem 1.5rem;
   display: flex;
@@ -827,7 +820,7 @@
 
 .rejected-card {
   background: var(--color-surface);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   padding: 1.25rem 1.5rem;
   display: flex;

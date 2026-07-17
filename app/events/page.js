@@ -23,6 +23,8 @@ import {
   Loader2,
   Search,
   Sparkles,
+  Sun,
+  Moon,
 } from "lucide-react";
 import "./events.css";
 
@@ -244,6 +246,10 @@ export default function EventsPage() {
   const [cancellingId, setCancellingId] = useState(null);
   const [activeFilter, setActiveFilter] = useState("All");
   const [toast, setToast] = useState({ message: "", type: "", visible: false });
+  const [darkMode, setDarkMode] = useState(false);
+
+  // Theme class
+  const themeClass = darkMode ? "events-page events-page-dark" : "events-page";
 
   // ── Toast ──
   const showToast = useCallback((message, type = "success") => {
@@ -381,7 +387,7 @@ export default function EventsPage() {
   // ─────────────────────────────────────────────────────────
   if (loading) {
     return (
-      <div className="events-page">
+      <div className={themeClass}>
         <div className="ev-container">
           <div className="ev-skeleton ev-skeleton-hero" />
           <div className="ev-skeleton ev-skeleton-filter" />
@@ -399,7 +405,7 @@ export default function EventsPage() {
   // RENDER: Page
   // ─────────────────────────────────────────────────────────
   return (
-    <div className="events-page">
+    <div className={themeClass}>
       <div className="ev-container">
         {/* ── Error Banner ── */}
         {error && (
@@ -411,6 +417,17 @@ export default function EventsPage() {
 
         {/* ── Hero ── */}
         <div className="ev-hero ev-fade-in">
+          {/* Theme toggle */}
+          <button
+            className="ev-theme-toggle"
+            onClick={() => setDarkMode((d) => !d)}
+            id="events-theme-toggle-btn"
+            aria-label="Toggle theme"
+          >
+            {darkMode ? <Sun size={16} strokeWidth={2} /> : <Moon size={16} strokeWidth={2} />}
+            {darkMode ? "Light Mode" : "Dark Mode"}
+          </button>
+
           <h1>
             <span className="ev-gradient-text">Explore Events</span>
           </h1>
