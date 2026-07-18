@@ -184,8 +184,7 @@ export default function CoursesPage() {
           </p>
           <h1 className="crs-hero-title">Explore Our Courses</h1>
           <p className="crs-hero-subtitle">
-            Structured programs from beginner to advanced — hip-hop, breaking,
-            ballet, jazz funk, heels, and more. Find your style and level up.
+            Structured programs from beginner to advanced — Bollywood, Freestyle, Hip-Hop, Semi-Classical, Kathak (Basic to Advanced), and more. Find your style and level up.
           </p>
           {!loading && courses.length > 0 && (
             <div className="crs-hero-count">
@@ -199,6 +198,35 @@ export default function CoursesPage() {
       </header>
 
       <main className="crs-container">
+        {/* ── Core Programs ── */}
+        <section className="crs-static-programs" style={{ marginBottom: '4rem' }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', marginBottom: '1.5rem' }}>Our Core Offerings</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+            <article className="crs-card" style={{ background: 'var(--color-surface-alt)', padding: '2rem', borderRadius: 'var(--radius-xl)', height: 'auto', display: 'block' }}>
+              <div style={{ display: 'inline-block', background: '#C6FF3D', color: '#000', padding: '0.25rem 0.75rem', borderRadius: '999px', fontSize: '0.875rem', fontWeight: 600, marginBottom: '1rem' }}>Dance Forms</div>
+              <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Basic to Advanced Training</h3>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem', color: 'var(--color-body-text)' }}>
+                <li>✨ Bollywood</li>
+                <li>✨ Freestyle</li>
+                <li>✨ Hip-Hop</li>
+                <li>✨ Semi-Classical</li>
+                <li>✨ Kathak</li>
+              </ul>
+            </article>
+            <article className="crs-card" style={{ background: 'var(--color-surface-alt)', padding: '2rem', borderRadius: 'var(--radius-xl)', height: 'auto', display: 'block' }}>
+              <div style={{ display: 'inline-block', background: '#C6FF3D', color: '#000', padding: '0.25rem 0.75rem', borderRadius: '999px', fontSize: '0.875rem', fontWeight: 600, marginBottom: '1rem' }}>Certification & Degree</div>
+              <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Kathak Professional Courses</h3>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem', color: 'var(--color-body-text)' }}>
+                <li>🎓 1-Year Diploma</li>
+                <li>🎓 2-Year Diploma</li>
+                <li>🎓 Sangeet Prabhakar</li>
+                <li>🎓 BPA (Bachelor of Performing Arts) in Kathak</li>
+                <li>🎓 MA (Master of Arts) in Kathak</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
         {/* ── Error fallback notice ── */}
         {error && (
           <div className="crs-demo-notice" role="status" style={{color: "var(--color-primary)", borderColor: "rgba(255, 31, 109, 0.25)", background: "rgba(255, 31, 109, 0.08)"}}>

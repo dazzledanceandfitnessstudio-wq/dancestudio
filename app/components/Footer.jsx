@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Sparkles, Camera, MessageCircle, Video, Mail, MapPin, Phone } from "lucide-react";
+import Image from "next/image";
+import { Camera, MessageCircle, Mail, MapPin, Phone } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -7,16 +8,8 @@ export default function Footer() {
       <div className="ld-container">
         <div className="ld-footer-grid">
           <div className="ld-footer-col">
-            <h3>
-              <Sparkles
-                size={18}
-                style={{
-                  display: "inline",
-                  verticalAlign: "middle",
-                  marginRight: "6px",
-                  color: "#FF1F6D",
-                }}
-              />
+            <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Image src="/dazzle-logo.jpg" alt="Dazzle Logo" width={32} height={32} style={{ borderRadius: '6px' }} />
               Dazzle Dance Studio
             </h3>
             <p>
@@ -24,17 +17,16 @@ export default function Footer() {
               community and find your groove.
             </p>
             <div className="ld-socials">
-              <a href="#" className="ld-social-link"><Camera size={20} /></a>
-              <a href="#" className="ld-social-link"><MessageCircle size={20} /></a>
-              <a href="#" className="ld-social-link"><Video size={20} /></a>
+              <a href="https://www.instagram.com/priya_dazzlestudio?utm_source=qr&igsh=MWl4ZzRpbmJucGo0MA==" className="ld-social-link" target="_blank" rel="noopener noreferrer"><Camera size={20} /></a>
+              <a href="https://www.facebook.com/share/14i2QhGkLd4/" className="ld-social-link" target="_blank" rel="noopener noreferrer"><MessageCircle size={20} /></a>
             </div>
           </div>
 
           <div className="ld-footer-col">
             <h3>Contact Us</h3>
-            <p><Mail size={16} /> hello@dazzledance.com</p>
+            <p><Mail size={16} /> dazzledanceandfitnessstudio@gmail.com</p>
             <p><Phone size={16} /> +1 (555) 123-4567</p>
-            <p><MapPin size={16} /> 123 Rhythm Avenue, NY 10001</p>
+            <p><MapPin size={16} /> Dazzle Dance & Fitness Studio, Jabalpur</p>
           </div>
 
           <div className="ld-footer-col">

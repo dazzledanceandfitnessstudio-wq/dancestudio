@@ -118,9 +118,9 @@ export default function ServicesPage() {
 
           {/* Quick contact pills */}
           <div className="svc-hero-contact">
-            <a href="mailto:hello@dazzledance.com" className="svc-contact-pill">
+            <a href="mailto:dazzledanceandfitnessstudio@gmail.com" className="svc-contact-pill">
               <Mail size={14} strokeWidth={2} />
-              hello@dazzledance.com
+              dazzledanceandfitnessstudio@gmail.com
             </a>
             <a href="tel:+15551234567" className="svc-contact-pill">
               <Phone size={14} strokeWidth={2} />
@@ -132,6 +132,22 @@ export default function ServicesPage() {
       </header>
 
       <main className="svc-container">
+        {/* ── Special Choreography Services ── */}
+        <section className="svc-static" style={{ marginBottom: '4rem' }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', marginBottom: '1.5rem' }}>Special Choreography Services</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+            {["School Functions", "College Events", "Wedding Choreography", "Cultural Programs", "Stage Shows & Competitions"].map((service, index) => (
+              <article key={index} className="svc-card" style={{ background: 'var(--color-surface-alt)', padding: '2rem', borderRadius: 'var(--radius-xl)' }}>
+                <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(255, 31, 109, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FF1F6D', marginBottom: '1.5rem' }}>
+                  <Sparkles size={24} />
+                </div>
+                <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>{service}</h3>
+                <p style={{ color: 'var(--color-body-text)' }}>Professional choreography tailored to your specific event needs and audience.</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
         {loading ? (
           <div className="svc-grid">
              {[1, 2].map((i) => (
@@ -158,11 +174,11 @@ export default function ServicesPage() {
             Have something custom in mind?
           </h2>
           <p className="svc-bottom-desc">
-            We love creative briefs. Reach out and let's build something
+            We love creative briefs. Reach out and let&apos;s build something
             unforgettable together.
           </p>
           <a
-            href="mailto:hello@dazzledance.com?subject=Custom Inquiry"
+            href="mailto:dazzledanceandfitnessstudio@gmail.com?subject=Custom Inquiry"
             className="svc-btn-primary"
             id="services-custom-inquiry"
           >

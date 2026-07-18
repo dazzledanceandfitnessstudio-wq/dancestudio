@@ -11,6 +11,8 @@ import {
   X,
   Sparkles,
   ArrowRight,
+  Camera,
+  MessageCircle,
 } from "lucide-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -40,8 +42,8 @@ const CONTACT_INFO = [
   {
     icon: MapPin,
     label: "Visit Us",
-    value: "123 Rhythm Avenue, Studio 4B",
-    detail: "New York, NY 10001",
+    value: "Dazzle Dance & Fitness Studio, Jabalpur.",
+    detail: "Jabalpur",
   },
   {
     icon: Phone,
@@ -52,8 +54,8 @@ const CONTACT_INFO = [
   {
     icon: Mail,
     label: "Email Us",
-    value: "hello@dazzledance.com",
-    href: "mailto:hello@dazzledance.com",
+    value: "dazzledanceandfitnessstudio@gmail.com",
+    href: "mailto:dazzledanceandfitnessstudio@gmail.com",
   },
   {
     icon: Clock,
@@ -115,8 +117,8 @@ export default function ContactPage() {
           </p>
           <h1 className="ct-hero-title">Drop In or Drop a Line</h1>
           <p className="ct-hero-subtitle">
-            Questions about classes, private sessions, or studio rentals? We're
-            here to help. Reach out and we'll get back to you within 24 hours.
+            Questions about classes, private sessions, or studio rentals? We&apos;re
+            here to help. Reach out and we&apos;ll get back to you within 24 hours.
           </p>
         </div>
         <div className="ct-hero-bar" aria-hidden="true" />
@@ -128,7 +130,7 @@ export default function ContactPage() {
           <div className="ct-info-col">
             <h2 className="ct-info-heading">Get in Touch</h2>
             <p className="ct-info-desc">
-              Stop by the studio, give us a call, or send an email. We'd love
+              Stop by the studio, give us a call, or send an email. We&apos;d love
               to hear from you.
             </p>
 
@@ -160,6 +162,16 @@ export default function ContactPage() {
               <MapPin size={28} strokeWidth={1.5} />
               <span>Interactive map coming soon</span>
             </div>
+
+            {/* Social Links */}
+            <div className="ct-social-links" style={{ marginTop: '2rem', display: 'flex', gap: '1.5rem' }}>
+              <a href="https://www.instagram.com/priya_dazzlestudio?utm_source=qr&igsh=MWl4ZzRpbmJucGo0MA==" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-primary)', textDecoration: 'none', fontWeight: 500 }}>
+                <Camera size={20} /> Instagram
+              </a>
+              <a href="https://www.facebook.com/share/14i2QhGkLd4/" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-primary)', textDecoration: 'none', fontWeight: 500 }}>
+                <MessageCircle size={20} /> Facebook
+              </a>
+            </div>
           </div>
 
           {/* ── Right: Enquiry Form ── */}
@@ -167,7 +179,7 @@ export default function ContactPage() {
             <div className="ct-form-card">
               <h2 className="ct-form-heading">Send an Enquiry</h2>
               <p className="ct-form-desc">
-                Fill out the form below and we'll get back to you as soon as
+                Fill out the form below and we&apos;ll get back to you as soon as
                 possible.
               </p>
 
@@ -244,7 +256,7 @@ export default function ContactPage() {
                     id="ct-message"
                     name="message"
                     className="ct-input ct-textarea"
-                    placeholder="Tell us what you're looking for…"
+                    placeholder="Tell us what you&apos;re looking for…"
                     rows={5}
                     value={form.message}
                     onChange={handleChange}

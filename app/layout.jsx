@@ -1,4 +1,5 @@
 import { Poppins, Inter } from "next/font/google";
+import Script from 'next/script';
 import "./globals.css";
 
 const poppins = Poppins({
@@ -25,7 +26,10 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${poppins.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" />
+        {children}
+      </body>
     </html>
   );
 }

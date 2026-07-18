@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import Image from "next/image";
 
 // ─── No Demo Fallback ──────────────────────────────────────────────
 
@@ -68,7 +69,7 @@ export default function AboutPage() {
             <p className="abt-hero-subtitle">
               Dazzle Dance Studio was built on one belief: everyone deserves
               access to world-class dance education — no audition required.
-              Whether you're taking your first groove class or training for a
+              Whether you&apos;re taking your first groove class or training for a
               national competition, you belong here.
             </p>
             <a href="/courses" className="abt-btn-primary" id="about-explore-courses">
@@ -93,6 +94,17 @@ export default function AboutPage() {
             working professionals who teach because they believe movement
             changes lives. No gatekeeping. No hierarchy. Just the floor, the
             music, and you.
+          </p>
+        </section>
+
+        {/* ── Founder Bio ── */}
+        <section className="abt-mission" style={{ marginTop: '4rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+          <h2 className="abt-section-title">Priya Thakur, Director & Founder – Since 2013</h2>
+          <div style={{ margin: '2rem 0' }}>
+            <Image src="/priya-thakur.jpg" alt="Priya Thakur" width={250} height={250} style={{ borderRadius: '50%', objectFit: 'cover' }} />
+          </div>
+          <p className="abt-mission-text">
+            With 15+ years of experience and an FSSA Certified Fitness Coach certification, I am passionate about helping people grow through dance and fitness. Since establishing Dazzle Dance & Fitness Studio in 2013, I have trained students in Bollywood, Hip-Hop, Kathak, Dance Fitness, Functional Training, Modeling & Grooming, and Personality Development. I also organize dance competitions, stage shows, workshops, and cultural events, providing young talent with opportunities to perform, build confidence, and pursue their passion.
           </p>
         </section>
 
