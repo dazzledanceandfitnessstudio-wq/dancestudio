@@ -9,12 +9,12 @@ export default function HeroSection({ user, onSignIn }) {
       <div className="ld-hero-media">
         <div className="ld-video-wrapper">
           <iframe
-            src="https://player.vimeo.com/video/938419168?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;controls=0&amp;autoplay=1&amp;muted=1&amp;loop=1"
+            src="https://player.vimeo.com/video/938419168?badge=0&autopause=0&player_id=0&app_id=58479&controls=0&autoplay=1&muted=1&loop=1&background=1"
             frameBorder="0"
             allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
-            title="STEEZY Site Header Video"
+            title="Dazzle Dance Studio"
             className="ld-hero-video"
-            data-ready="true"
+            allowFullScreen
           />
         </div>
       </div>
@@ -60,6 +60,7 @@ export default function HeroSection({ user, onSignIn }) {
     </div>
   );
 }
+
 
 
 
