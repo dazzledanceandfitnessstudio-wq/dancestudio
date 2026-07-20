@@ -55,7 +55,7 @@ export default function HeroSection({ user, onSignIn }) {
               Get Started
             </button>
           </>
-        )}
+        )}  
       </div>
     </div>
   );
