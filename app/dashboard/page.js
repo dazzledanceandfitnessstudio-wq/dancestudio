@@ -103,7 +103,7 @@ function Toast({ message, type, visible }) {
   );
 }
 
-// ─── Session Row Component ─────────────────────────────────
+// // ─── Session Row Component ─────────────────────────────────
 function SessionRow({ session, index }) {
   const [copied, setCopied] = useState(false);
   const meetingLink = session.meetingLink || null;
@@ -154,6 +154,19 @@ function SessionRow({ session, index }) {
         }}>
           {session.title || `Session ${index + 1}`}
         </div>
+        
+        {/* 🔥 FIX: Session Description */}
+        {session.description && (
+          <div style={{ 
+            fontSize: "0.75rem", 
+            color: "var(--body-text, #B0A8C0)",
+            marginBottom: "0.25rem",
+            lineHeight: "1.4"
+          }}>
+            {session.description}
+          </div>
+        )}
+        
         <div className="session-date" style={{ 
           fontSize: "0.75rem", 
           color: "var(--muted)",
