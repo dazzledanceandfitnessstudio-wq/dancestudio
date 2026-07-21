@@ -31,6 +31,9 @@ import {
   Zap,
   XCircle,
   Loader2,
+  Copy,
+  CheckCircle,
+  Link as LinkIcon,
 } from "lucide-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -100,6 +103,191 @@ function Toast({ message, type, visible }) {
   );
 }
 
+// ─── Session Row Component ─────────────────────────────────
+function SessionRow({ session, index }) {
+  const [copied, setCopied] = useState(false);
+  const meetingLink = session.meetingLink || null;
+
+  const handleCopyLink = async (e) => {
+    e.stopPropagation();
+    if (!meetingLink) return;
+    try {
+      await navigator.clipboard.writeText(meetingLink);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  };
+
+  return (
+    <div 
+      className="session-row" 
+      key={session.id || index}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "0.75rem 1rem",
+        background: "var(--surface-alt, rgba(255,255,255,0.03))",
+        borderRadius: "10px",
+        border: "1px solid var(--border, rgba(255,255,255,0.06))",
+        transition: "all 0.2s ease",
+        gap: "0.75rem",
+        flexWrap: "wrap",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.background = "var(--surface, rgba(255,255,255,0.06))";
+        e.currentTarget.style.borderColor = "rgba(147,51,234,0.2)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = "var(--surface-alt, rgba(255,255,255,0.03))";
+        e.currentTarget.style.borderColor = "var(--border, rgba(255,255,255,0.06))";
+      }}
+    >
+      <div className="session-info" style={{ flex: 1, minWidth: "0" }}>
+        <div className="session-title" style={{ 
+          fontWeight: 600, 
+          fontSize: "0.875rem",
+          color: "var(--foreground)",
+          marginBottom: "0.125rem"
+        }}>
+          {session.title || `Session ${index + 1}`}
+        </div>
+        <div className="session-date" style={{ 
+          fontSize: "0.75rem", 
+          color: "var(--muted)",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          flexWrap: "wrap",
+        }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
+            <Calendar size={12} strokeWidth={2} />
+            {session.sessionDate ? formatDate(session.sessionDate) : "Date TBD"}
+          </span>
+          {session.sessionDate && (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
+              <Clock size={12} strokeWidth={2} />
+              {formatTime(session.sessionDate)}
+            </span>
+          )}
+        </div>
+        
+        {/* Meeting Link Display */}
+        {meetingLink && (
+          <div style={{ 
+            marginTop: "0.375rem",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            flexWrap: "wrap",
+          }}>
+            <LinkIcon size={12} strokeWidth={2} style={{ color: "var(--muted)", flexShrink: 0 }} />
+            <span style={{ 
+              fontSize: "0.7rem",
+              color: "var(--muted)",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              maxWidth: "200px",
+            }}>
+              {meetingLink}
+            </span>
+          </div>
+        )}
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexShrink: 0 }}>
+        {meetingLink && (
+          <>
+            <button
+              onClick={handleCopyLink}
+              style={{
+                padding: "0.35rem 0.6rem",
+                borderRadius: "8px",
+                border: "1px solid var(--border)",
+                background: "transparent",
+                color: "var(--muted)",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.25rem",
+                fontSize: "0.7rem",
+                fontFamily: "var(--font-body)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "var(--primary)";
+                e.currentTarget.style.color = "var(--primary)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "var(--border)";
+                e.currentTarget.style.color = "var(--muted)";
+              }}
+            >
+              {copied ? (
+                <CheckCircle size={14} strokeWidth={2} style={{ color: "#22C55E" }} />
+              ) : (
+                <Copy size={14} strokeWidth={2} />
+              )}
+              {copied ? "Copied!" : "Copy"}
+            </button>
+            
+            <a
+              href={meetingLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-gradient-cta btn-gradient-sm"
+              id={`dashboard-join-session-${session.id}`}
+              style={{
+                padding: "0.35rem 0.875rem",
+                borderRadius: "8px",
+                fontSize: "0.7rem",
+                fontWeight: "600",
+                background: "linear-gradient(135deg, #9333EA, #DB2777)",
+                color: "#fff",
+                border: "none",
+                cursor: "pointer",
+                textDecoration: "none",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.375rem",
+                transition: "all 0.2s ease",
+                boxShadow: "0 2px 10px rgba(147,51,234,0.25)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-1px) scale(1.02)";
+                e.currentTarget.style.boxShadow = "0 4px 20px rgba(147,51,234,0.35)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "scale(1)";
+                e.currentTarget.style.boxShadow = "0 2px 10px rgba(147,51,234,0.25)";
+              }}
+            >
+              <ExternalLink size={12} strokeWidth={2} />
+              Join
+            </a>
+          </>
+        )}
+        
+        {!meetingLink && (
+          <span style={{ 
+            fontSize: "0.7rem", 
+            color: "var(--muted)",
+            padding: "0.35rem 0.875rem",
+            background: "var(--surface)",
+            borderRadius: "8px",
+            border: "1px solid var(--border)",
+          }}>
+            No link
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Dashboard ────────────────────────────────────────
 export default function DashboardPage() {
   // Auth state
@@ -146,7 +334,6 @@ export default function DashboardPage() {
           return;
         }
 
-        // Fetch profile
         const userProfile = await authService.getUserProfile(currentUser.uid);
         if (cancelled) return;
         setProfile(userProfile);
@@ -167,14 +354,13 @@ export default function DashboardPage() {
     };
   }, []);
 
-  // ── Data fetching (runs after auth) ──
+  // ── Data fetching ──
   useEffect(() => {
     if (!user) return;
     let cancelled = false;
 
     (async () => {
       try {
-        // Fetch enrollments + enrolled events in parallel
         const [userEnrollments, userEnrolledEvents] = await Promise.all([
           enrollmentService.getUserEnrollments(user.uid),
           eventService.getUserEnrolledEvents(user.uid),
@@ -184,13 +370,11 @@ export default function DashboardPage() {
         setEnrollments(userEnrollments);
         setEnrolledEvents(userEnrolledEvents);
 
-        // Build a map of events for quick lookup (for pending/rejected cards)
         const evtMap = {};
         userEnrolledEvents.forEach((e) => {
           evtMap[e.id] = e;
         });
 
-        // Fetch event details for non-approved enrollments (pending/rejected)
         const nonApprovedIds = userEnrollments
           .filter((en) => en.status !== "APPROVED" && !evtMap[en.eventId])
           .map((en) => en.eventId);
@@ -207,14 +391,11 @@ export default function DashboardPage() {
         if (cancelled) return;
         setAllEvents(evtMap);
 
-        // Fetch sessions for each approved event
         const sessionMap = {};
         await Promise.all(
           userEnrolledEvents.map(async (event) => {
             try {
-              const sessions = await sessionService.getSessionsByEvent(
-                event.id
-              );
+              const sessions = await sessionService.getSessionsByEvent(event.id);
               sessionMap[event.id] = sessions;
             } catch {
               sessionMap[event.id] = [];
@@ -241,26 +422,19 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!user) return;
 
-    // Subscribe to enrollment changes
     const unsubEnrollments = notificationService.subscribeToEnrollments(
       user.uid,
       async (updatedEnrollments) => {
         setEnrollments(updatedEnrollments);
-
-        // Re-fetch enrolled events when enrollment statuses change
         try {
-          const freshEvents = await eventService.getUserEnrolledEvents(
-            user.uid
-          );
+          const freshEvents = await eventService.getUserEnrolledEvents(user.uid);
           setEnrolledEvents(freshEvents);
 
-          // Update event map
           const evtMap = {};
           freshEvents.forEach((e) => {
             evtMap[e.id] = e;
           });
 
-          // Fetch event details for non-approved
           const nonApprovedIds = updatedEnrollments
             .filter((en) => en.status !== "APPROVED" && !evtMap[en.eventId])
             .map((en) => en.eventId);
@@ -275,14 +449,11 @@ export default function DashboardPage() {
           }
           setAllEvents(evtMap);
 
-          // Re-fetch sessions for new approved events
           const sessionMap = {};
           await Promise.all(
             freshEvents.map(async (event) => {
               try {
-                const sessions = await sessionService.getSessionsByEvent(
-                  event.id
-                );
+                const sessions = await sessionService.getSessionsByEvent(event.id);
                 sessionMap[event.id] = sessions;
               } catch {
                 sessionMap[event.id] = [];
@@ -291,12 +462,11 @@ export default function DashboardPage() {
           );
           setEventSessions(sessionMap);
         } catch {
-          // Non-critical: real-time will catch up
+          // Non-critical
         }
       }
     );
 
-    // Subscribe to profile changes
     const unsubProfile = notificationService.subscribeToUserProfile(
       user.uid,
       (updatedProfile) => {
@@ -370,25 +540,18 @@ export default function DashboardPage() {
   };
 
   // ── Derived data ──
-  const approvedEnrollments = enrollments.filter(
-    (e) => e.status === "APPROVED"
-  );
+  const approvedEnrollments = enrollments.filter((e) => e.status === "APPROVED");
   const pendingEnrollments = enrollments.filter((e) => e.status === "PENDING");
-  const rejectedEnrollments = enrollments.filter(
-    (e) => e.status === "REJECTED"
-  );
+  const rejectedEnrollments = enrollments.filter((e) => e.status === "REJECTED");
 
   const totalSessions = Object.values(eventSessions).reduce(
     (sum, sessions) => sum + sessions.length,
     0
   );
 
-  // Theme class
   const themeClass = darkMode ? "dashboard dashboard-dark" : "dashboard";
 
-  // ─────────────────────────────────────────────────────────
-  // RENDER: Sign-In Prompt
-  // ─────────────────────────────────────────────────────────
+  // ── RENDER: Sign-In Prompt ──
   if (authChecked && !user) {
     return (
       <div className={themeClass}>
@@ -416,9 +579,7 @@ export default function DashboardPage() {
     );
   }
 
-  // ─────────────────────────────────────────────────────────
-  // RENDER: Loading Skeleton
-  // ─────────────────────────────────────────────────────────
+  // ── RENDER: Loading ──
   if (loading) {
     return (
       <div className={themeClass}>
@@ -430,10 +591,7 @@ export default function DashboardPage() {
             <div className="skeleton skeleton-stat" />
           </div>
           <div style={{ marginTop: "2.5rem" }}>
-            <div
-              className="skeleton skeleton-line"
-              style={{ marginBottom: "1.25rem" }}
-            />
+            <div className="skeleton skeleton-line" style={{ marginBottom: "1.25rem" }} />
             <div className="dash-grid">
               <div className="skeleton skeleton-card" />
               <div className="skeleton skeleton-card" />
@@ -445,14 +603,11 @@ export default function DashboardPage() {
     );
   }
 
-  // ─────────────────────────────────────────────────────────
-  // RENDER: Dashboard
-  // ─────────────────────────────────────────────────────────
+  // ── RENDER: Dashboard ──
   return (
     <div className={themeClass}>
       <Header user={user} onSignOut={handleSignOut} />
       <div className="dash-container">
-        {/* ── Error Banner ── */}
         {error && (
           <div className="error-banner fade-in" style={{ marginBottom: "1.5rem" }}>
             <AlertTriangle size={18} strokeWidth={2} className="error-banner-icon" />
@@ -460,30 +615,20 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* ── Profile Header ── */}
+        {/* Profile Header */}
         <div className="dash-card-hero fade-in">
           <div className="profile-header">
             <div className="profile-top">
               <div className="profile-avatar">
                 {profile?.photoUrl ? (
-                  <img
-                    src={profile.photoUrl}
-                    alt={profile?.name || "User"}
-                    referrerPolicy="no-referrer"
-                  />
+                  <img src={profile.photoUrl} alt={profile?.name || "User"} referrerPolicy="no-referrer" />
                 ) : (
-                  <span className="profile-avatar-fallback">
-                    {getInitials(profile?.name)}
-                  </span>
+                  <span className="profile-avatar-fallback">{getInitials(profile?.name)}</span>
                 )}
               </div>
               <div className="profile-info">
-                <div className="profile-name">
-                  {profile?.name || "Dancer"}
-                </div>
-                <div className="profile-email">
-                  {profile?.email || user?.email}
-                </div>
+                <div className="profile-name">{profile?.name || "Dancer"}</div>
+                <div className="profile-email">{profile?.email || user?.email}</div>
                 {profile?.phone && (
                   <div className="dash-caption" style={{ marginTop: "0.125rem", display: "flex", alignItems: "center", gap: "0.375rem" }}>
                     <Phone size={13} strokeWidth={2} />
@@ -493,7 +638,6 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="profile-actions">
-              {/* Dark / Light mode toggle */}
               <button
                 className="btn-ghost"
                 onClick={() => setDarkMode((d) => !d)}
@@ -508,53 +652,35 @@ export default function DashboardPage() {
                 onClick={() => setEditingProfile(!editingProfile)}
                 id="dashboard-edit-profile-btn"
               >
-                {editingProfile ? (
-                  <><X size={15} strokeWidth={2} /> Cancel</>
-                ) : (
-                  <><Edit3 size={15} strokeWidth={2} /> Edit Profile</>
-                )}
+                {editingProfile ? <><X size={15} strokeWidth={2} /> Cancel</> : <><Edit3 size={15} strokeWidth={2} /> Edit Profile</>}
               </button>
-              <button
-                className="btn-ghost"
-                onClick={handleSignOut}
-                id="dashboard-signout-btn"
-              >
-                <LogOut size={15} strokeWidth={2} />
-                Sign Out
+              <button className="btn-ghost" onClick={handleSignOut} id="dashboard-signout-btn">
+                <LogOut size={15} strokeWidth={2} /> Sign Out
               </button>
             </div>
           </div>
 
-          {/* ── Inline Profile Edit Form ── */}
           {editingProfile && (
             <div className="profile-edit-form fade-in">
               <div className="form-group">
-                <label className="form-label" htmlFor="edit-name">
-                  Name
-                </label>
+                <label className="form-label" htmlFor="edit-name">Name</label>
                 <input
                   className="form-input"
                   id="edit-name"
                   type="text"
                   value={editForm.name}
-                  onChange={(e) =>
-                    setEditForm((f) => ({ ...f, name: e.target.value }))
-                  }
+                  onChange={(e) => setEditForm((f) => ({ ...f, name: e.target.value }))}
                   placeholder="Your name"
                 />
               </div>
               <div className="form-group">
-                <label className="form-label" htmlFor="edit-phone">
-                  Phone
-                </label>
+                <label className="form-label" htmlFor="edit-phone">Phone</label>
                 <input
                   className="form-input"
                   id="edit-phone"
                   type="tel"
                   value={editForm.phone}
-                  onChange={(e) =>
-                    setEditForm((f) => ({ ...f, phone: e.target.value }))
-                  }
+                  onChange={(e) => setEditForm((f) => ({ ...f, phone: e.target.value }))}
                   placeholder="Your phone number"
                 />
               </div>
@@ -565,20 +691,13 @@ export default function DashboardPage() {
                   disabled={savingProfile}
                   id="dashboard-save-profile-btn"
                 >
-                  {savingProfile ? (
-                    <><Loader2 size={16} strokeWidth={2} className="spin-icon" /> Saving…</>
-                  ) : (
-                    <><Save size={16} strokeWidth={2} /> Save Changes</>
-                  )}
+                  {savingProfile ? <><Loader2 size={16} strokeWidth={2} className="spin-icon" /> Saving…</> : <><Save size={16} strokeWidth={2} /> Save Changes</>}
                 </button>
                 <button
                   className="btn-ghost"
                   onClick={() => {
                     setEditingProfile(false);
-                    setEditForm({
-                      name: profile?.name || "",
-                      phone: profile?.phone || "",
-                    });
+                    setEditForm({ name: profile?.name || "", phone: profile?.phone || "" });
                   }}
                 >
                   Discard
@@ -588,48 +707,32 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* ── Stats Row ── */}
-        <div
-          className="dash-stats-row fade-in fade-in-delay-1"
-          style={{ marginTop: "1.5rem" }}
-        >
+        {/* Stats */}
+        <div className="dash-stats-row fade-in fade-in-delay-1" style={{ marginTop: "1.5rem" }}>
           <div className="dash-stat-card stat-card-events">
-            <div className="stat-icon-wrap stat-icon-primary">
-              <Target size={20} strokeWidth={2} />
-            </div>
-            <span className="dash-stat-number">
-              {approvedEnrollments.length}
-            </span>
+            <div className="stat-icon-wrap stat-icon-primary"><Target size={20} strokeWidth={2} /></div>
+            <span className="dash-stat-number">{approvedEnrollments.length}</span>
             <span className="dash-stat-label">Enrolled Events</span>
           </div>
           <div className="dash-stat-card stat-card-sessions">
-            <div className="stat-icon-wrap stat-icon-tertiary">
-              <Activity size={20} strokeWidth={2} />
-            </div>
+            <div className="stat-icon-wrap stat-icon-tertiary"><Activity size={20} strokeWidth={2} /></div>
             <span className="dash-stat-number">{totalSessions}</span>
             <span className="dash-stat-label">Upcoming Sessions</span>
           </div>
           <div className="dash-stat-card stat-card-pending">
-            <div className="stat-icon-wrap stat-icon-secondary">
-              <Clock size={20} strokeWidth={2} />
-            </div>
-            <span className="dash-stat-number">
-              {pendingEnrollments.length}
-            </span>
+            <div className="stat-icon-wrap stat-icon-secondary"><Clock size={20} strokeWidth={2} /></div>
+            <span className="dash-stat-number">{pendingEnrollments.length}</span>
             <span className="dash-stat-label">Pending Requests</span>
           </div>
         </div>
 
-        {/* ── My Events Section Header + Toggle ── */}
+        {/* My Events */}
         <div className="section-header fade-in fade-in-delay-2">
           <Target size={22} strokeWidth={2} className="section-icon-svg" />
           <h2>My Events</h2>
-          {approvedEnrollments.length > 0 && (
-            <span className="section-count">{approvedEnrollments.length}</span>
-          )}
+          {approvedEnrollments.length > 0 && <span className="section-count">{approvedEnrollments.length}</span>}
         </div>
 
-        {/* ── Segmented Toggle ── */}
         <div className="segment-toggle fade-in fade-in-delay-2">
           <button
             className={`segment-btn ${activeTab === "active" ? "segment-active" : ""}`}
@@ -649,117 +752,102 @@ export default function DashboardPage() {
 
         {enrolledEvents.length === 0 && pendingEnrollments.length === 0 && rejectedEnrollments.length === 0 ? (
           <div className="dash-card empty-state fade-in">
-            <div className="empty-state-icon-wrap">
-              <Flame size={36} strokeWidth={1.5} />
-            </div>
+            <div className="empty-state-icon-wrap"><Flame size={36} strokeWidth={1.5} /></div>
             <div className="empty-state-title">Drop into Your First Class</div>
-            <div className="empty-state-desc">
-              You haven&apos;t enrolled in any events yet. Browse what&apos;s coming up
-              and jump in!
-            </div>
+            <div className="empty-state-desc">You haven't enrolled in any events yet. Browse what's coming up and jump in!</div>
             <a href="/events" className="btn-gradient-cta" id="dashboard-browse-events-link">
-              <Flame size={16} strokeWidth={2} />
-              Browse Events
+              <Flame size={16} strokeWidth={2} /> Browse Events
             </a>
           </div>
         ) : enrolledEvents.length === 0 ? (
           <div className="dash-card empty-state fade-in" style={{ padding: "2rem" }}>
-            <div className="empty-state-icon-wrap">
-              <Clock size={36} strokeWidth={1.5} />
-            </div>
+            <div className="empty-state-icon-wrap"><Clock size={36} strokeWidth={1.5} /></div>
             <div className="empty-state-title">No Approved Events Yet</div>
-            <div className="empty-state-desc">
-              Your enrollment requests are being reviewed. Check back soon!
-            </div>
+            <div className="empty-state-desc">Your enrollment requests are being reviewed. Check back soon!</div>
           </div>
         ) : (
           <div className="dash-grid fade-in fade-in-delay-2">
             {enrolledEvents.map((event) => {
               const sessions = eventSessions[event.id] || [];
               const isExpanded = expandedEvents[event.id];
+              const bannerImage = event.bannerUrl || event.imageUrl || null;
+
               return (
                 <div className="event-card" key={event.id}>
+                  {bannerImage && (
+                    <div className="event-card-banner" style={{ height: "140px", overflow: "hidden", flexShrink: 0 }}>
+                      <img
+                        src={bannerImage}
+                        alt={event.title}
+                        loading="lazy"
+                        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                      />
+                    </div>
+                  )}
+                  
                   <div className="event-card-body">
                     <div className="event-card-meta">
                       <span className="badge badge-approved">Enrolled</span>
-                      {event.danceStyle && (
-                        <span className="badge badge-style">
-                          {event.danceStyle}
-                        </span>
-                      )}
+                      {event.danceStyle && <span className="badge badge-style">{event.danceStyle}</span>}
                     </div>
                     <div className="event-card-title">{event.title}</div>
-                    {event.description && (
-                      <div className="event-card-desc">{event.description}</div>
-                    )}
+                    {event.description && <div className="event-card-desc">{event.description}</div>}
                     <div className="event-card-footer">
                       <div className="dash-caption" style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
                         {event.eventDate && (
                           <span style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
-                            <Calendar size={13} strokeWidth={2} />
-                            {formatDate(event.eventDate)}
+                            <Calendar size={13} strokeWidth={2} /> {formatDate(event.eventDate)}
                           </span>
                         )}
                         {event.venue && (
                           <span style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
-                            <MapPin size={13} strokeWidth={2} />
-                            {event.venue}
+                            <MapPin size={13} strokeWidth={2} /> {event.venue}
                           </span>
                         )}
                       </div>
                     </div>
 
-                    {/* Sessions toggle */}
                     {sessions.length > 0 && (
                       <button
                         className="sessions-toggle"
                         onClick={() => toggleEventSessions(event.id)}
                         id={`dashboard-toggle-sessions-${event.id}`}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "0.5rem",
+                          background: "transparent",
+                          border: "none",
+                          color: "var(--muted)",
+                          cursor: "pointer",
+                          padding: "0.5rem 0",
+                          fontSize: "0.8125rem",
+                          fontWeight: "500",
+                          transition: "all 0.2s ease",
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.color = "var(--primary)"}
+                        onMouseLeave={(e) => e.currentTarget.style.color = "var(--muted)"}
                       >
                         <ChevronRight
                           size={14}
                           strokeWidth={2.5}
-                          className={`sessions-toggle-chevron ${isExpanded ? "open" : ""}`}
+                          style={{
+                            transform: isExpanded ? "rotate(90deg)" : "rotate(0)",
+                            transition: "transform 0.3s ease",
+                          }}
                         />
-                        {sessions.length} Session
-                        {sessions.length !== 1 ? "s" : ""}
+                        {sessions.length} Session{sessions.length !== 1 ? "s" : ""}
                       </button>
                     )}
                     {sessions.length === 0 && (
-                      <div className="dash-caption" style={{ opacity: 0.6 }}>
-                        No sessions scheduled yet
-                      </div>
+                      <div className="dash-caption" style={{ opacity: 0.6 }}>No sessions scheduled yet</div>
                     )}
                   </div>
 
-                  {/* Expanded sessions panel */}
                   {isExpanded && sessions.length > 0 && (
-                    <div className="sessions-panel">
-                      {sessions.map((session) => (
-                        <div className="session-row" key={session.id}>
-                          <div className="session-info">
-                            <div className="session-title">
-                              {session.title || "Session"}
-                            </div>
-                            <div className="session-date">
-                              {session.sessionDate
-                                ? `${formatDate(session.sessionDate)} · ${formatTime(session.sessionDate)}`
-                                : "Date TBD"}
-                            </div>
-                          </div>
-                          {session.meetingLink && (
-                            <a
-                              href={session.meetingLink}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="btn-gradient-cta btn-gradient-sm"
-                              id={`dashboard-join-session-${session.id}`}
-                            >
-                              <ExternalLink size={14} strokeWidth={2} />
-                              Join
-                            </a>
-                          )}
-                        </div>
+                    <div className="sessions-panel" style={{ padding: "0 1.5rem 1.5rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                      {sessions.map((session, idx) => (
+                        <SessionRow key={session.id || idx} session={session} index={idx} />
                       ))}
                     </div>
                   )}
@@ -769,7 +857,7 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* ── Pending Requests ── */}
+        {/* Pending Requests */}
         {pendingEnrollments.length > 0 && (
           <>
             <div className="section-header fade-in fade-in-delay-3">
@@ -777,41 +865,23 @@ export default function DashboardPage() {
               <h2>Pending Requests</h2>
               <span className="section-count">{pendingEnrollments.length}</span>
             </div>
-            <div
-              className="fade-in fade-in-delay-3"
-              style={{ display: "flex", flexDirection: "column", gap: "12px" }}
-            >
+            <div className="fade-in fade-in-delay-3" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               {pendingEnrollments.map((enrollment) => {
                 const event = allEvents[enrollment.eventId];
                 return (
                   <div className="pending-card" key={enrollment.id}>
                     <div className="pending-card-info">
-                      <div className="pending-card-title">
-                        {event?.title || "Loading event…"}
-                      </div>
-                      <div className="pending-card-date">
-                        Requested {formatDateTime(enrollment.requestedAt || enrollment.createdAt)}
-                      </div>
-                      <span className="badge badge-pending" style={{ marginTop: "0.375rem", alignSelf: "flex-start" }}>
-                        Pending Review
-                      </span>
+                      <div className="pending-card-title">{event?.title || "Loading event…"}</div>
+                      <div className="pending-card-date">Requested {formatDateTime(enrollment.requestedAt || enrollment.createdAt)}</div>
+                      <span className="badge badge-pending" style={{ marginTop: "0.375rem", alignSelf: "flex-start" }}>Pending Review</span>
                     </div>
                     <button
                       className="btn-danger"
-                      onClick={() =>
-                        handleCancelEnrollment(
-                          enrollment.id,
-                          enrollment.eventId
-                        )
-                      }
+                      onClick={() => handleCancelEnrollment(enrollment.id, enrollment.eventId)}
                       disabled={cancellingId === enrollment.id}
                       id={`dashboard-cancel-enrollment-${enrollment.id}`}
                     >
-                      {cancellingId === enrollment.id ? (
-                        <><Loader2 size={14} strokeWidth={2} className="spin-icon" /> Cancelling…</>
-                      ) : (
-                        <><XCircle size={14} strokeWidth={2} /> Cancel</>
-                      )}
+                      {cancellingId === enrollment.id ? <><Loader2 size={14} strokeWidth={2} className="spin-icon" /> Cancelling…</> : <><XCircle size={14} strokeWidth={2} /> Cancel</>}
                     </button>
                   </div>
                 );
@@ -820,28 +890,21 @@ export default function DashboardPage() {
           </>
         )}
 
-        {/* ── Rejected ── */}
+        {/* Rejected */}
         {rejectedEnrollments.length > 0 && (
           <>
             <div className="section-header fade-in fade-in-delay-4">
               <XCircle size={22} strokeWidth={2} className="section-icon-svg" />
               <h2>Rejected</h2>
             </div>
-            <div
-              className="fade-in fade-in-delay-4"
-              style={{ display: "flex", flexDirection: "column", gap: "12px" }}
-            >
+            <div className="fade-in fade-in-delay-4" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               {rejectedEnrollments.map((enrollment) => {
                 const event = allEvents[enrollment.eventId];
                 return (
                   <div className="rejected-card" key={enrollment.id}>
                     <div className="pending-card-info">
-                      <div className="pending-card-title">
-                        {event?.title || "Event"}
-                      </div>
-                      <div className="pending-card-date">
-                        Requested {formatDateTime(enrollment.requestedAt || enrollment.createdAt)}
-                      </div>
+                      <div className="pending-card-title">{event?.title || "Event"}</div>
+                      <div className="pending-card-date">Requested {formatDateTime(enrollment.requestedAt || enrollment.createdAt)}</div>
                     </div>
                     <span className="badge badge-rejected">Rejected</span>
                   </div>
@@ -852,13 +915,125 @@ export default function DashboardPage() {
         )}
       </div>
 
-      {/* ── Toast ── */}
-      <Toast
-        message={toast.message}
-        type={toast.type}
-        visible={toast.visible}
-      />
+      <Toast message={toast.message} type={toast.type} visible={toast.visible} />
       <Footer />
+
+      <style jsx>{`
+        .session-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0.75rem 1rem;
+          background: var(--surface-alt, rgba(255,255,255,0.03));
+          border-radius: 10px;
+          border: 1px solid var(--border, rgba(255,255,255,0.06));
+          transition: all 0.2s ease;
+          gap: 0.75rem;
+          flex-wrap: wrap;
+        }
+        .session-row:hover {
+          background: var(--surface, rgba(255,255,255,0.06));
+          border-color: rgba(147,51,234,0.2);
+        }
+        .session-info {
+          flex: 1;
+          min-width: 0;
+        }
+        .session-title {
+          font-weight: 600;
+          font-size: 0.875rem;
+          color: var(--foreground);
+          margin-bottom: 0.125rem;
+        }
+        .session-date {
+          font-size: 0.75rem;
+          color: var(--muted);
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+        }
+        .btn-copy {
+          padding: 0.35rem 0.6rem;
+          border-radius: 8px;
+          border: 1px solid var(--border);
+          background: transparent;
+          color: var(--muted);
+          cursor: pointer;
+          transition: all 0.2s ease;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.25rem;
+          font-size: 0.7rem;
+          font-family: var(--font-body);
+        }
+        .btn-copy:hover {
+          border-color: var(--primary);
+          color: var(--primary);
+        }
+        .btn-join {
+          padding: 0.35rem 0.875rem;
+          border-radius: 8px;
+          font-size: 0.7rem;
+          font-weight: 600;
+          background: linear-gradient(135deg, #9333EA, #DB2777);
+          color: #fff;
+          border: none;
+          cursor: pointer;
+          text-decoration: none;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.375rem;
+          transition: all 0.2s ease;
+          box-shadow: 0 2px 10px rgba(147,51,234,0.25);
+        }
+        .btn-join:hover {
+          transform: translateY(-1px) scale(1.02);
+          box-shadow: 0 4px 20px rgba(147,51,234,0.35);
+        }
+        .btn-no-link {
+          font-size: 0.7rem;
+          color: var(--muted);
+          padding: 0.35rem 0.875rem;
+          background: var(--surface);
+          border-radius: 8px;
+          border: 1px solid var(--border);
+        }
+        .link-display {
+          margin-top: 0.375rem;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+        }
+        .link-display span {
+          font-size: 0.7rem;
+          color: var(--muted);
+          overflow: hidden;
+          textOverflow: ellipsis;
+          whiteSpace: nowrap;
+          maxWidth: 200px;
+        }
+        .session-actions {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          flex-shrink: 0;
+        }
+        @media (max-width: 480px) {
+          .session-row {
+            flex-direction: column;
+            align-items: stretch;
+          }
+          .session-actions {
+            justify-content: flex-start;
+          }
+          .link-display span {
+            maxWidth: 150px;
+          }
+        }
+      `}</style>
     </div>
   );
 }
+

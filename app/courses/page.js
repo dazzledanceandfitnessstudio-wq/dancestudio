@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { eventService } from "../../lib/firebaseService";
+import { eventService, enrollmentService } from "../../lib/firebaseService";
 import {
   Sparkles,
   Clock,
@@ -14,11 +14,28 @@ import {
   GraduationCap,
   Calendar,
   Tag,
+  CheckCircle,
+  XCircle,
+  Shield,
+  Lock,
 } from "lucide-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { authService } from "../../lib/firebaseService";
 
-// ─── No Demo Fallback ────────────────────────────────────────────────────────
+// ─── Toast Component ────────────────────────────────────────────────────────
+function Toast({ message, type, visible }) {
+  return (
+    <div
+      className={`ld-toast ${visible ? "ld-toast-visible" : ""} ${
+        type === "success" ? "ld-toast-success" : "ld-toast-error"
+      }`}
+      role="status"
+    >
+      {message}
+    </div>
+  );
+}
 
 // ─── Skeleton ───────────────────────────────────────────────────────────────
 function SkeletonCard() {
@@ -36,10 +53,287 @@ function SkeletonCard() {
 }
 
 // ─── Course Card ────────────────────────────────────────────────────────────
-function CourseCard({ course, index }) {
+function CourseCard({ 
+  course, 
+  index, 
+  user, 
+  enrollmentMap, 
+  enrollingId, 
+  cancellingId, 
+  onEnroll, 
+  onCancel, 
+  onSignIn 
+}) {
   const spotsLeft = course.maxParticipants
     ? course.maxParticipants - (course.enrolledCount || 0)
     : null;
+
+  const isFull = course.maxParticipants && course.enrolledCount != null && 
+    course.enrolledCount >= course.maxParticipants;
+
+  const enrollment = course?.id ? enrollmentMap[course.id] : null;
+
+  // 🔥 FIX: Check both bannerUrl and imageUrl
+  const imageSrc = course.bannerUrl || course.imageUrl || null;
+
+  // ── Enrollment Button ──
+  const renderEnrollButton = () => {
+    // User not signed in
+    if (!user) {
+      return (
+        <button
+          className="crs-btn-enroll"
+          onClick={onSignIn}
+          style={{
+            width: "100%",
+            padding: "0.75rem 1.5rem",
+            borderRadius: "12px",
+            border: "2px solid rgba(147,51,234,0.3)",
+            background: "transparent",
+            color: "var(--primary, #9333EA)",
+            fontWeight: "600",
+            cursor: "pointer",
+            transition: "all 0.3s ease",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.5rem",
+            fontFamily: "var(--font-display, Poppins)",
+            fontSize: "0.875rem",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.background = "rgba(147,51,234,0.1)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = "transparent";
+          }}
+        >
+          <Shield size={15} strokeWidth={2} />
+          Sign in to Enroll
+        </button>
+      );
+    }
+
+    // Class Full
+    if (isFull) {
+      if (enrollment?.status === "APPROVED") {
+        return (
+          <a
+            href="/dashboard"
+            className="crs-btn-enroll"
+            style={{
+              width: "100%",
+              padding: "0.75rem 1.5rem",
+              borderRadius: "12px",
+              background: "rgba(34,197,94,0.15)",
+              color: "#22C55E",
+              fontWeight: "600",
+              textDecoration: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "0.5rem",
+              fontFamily: "var(--font-display, Poppins)",
+              fontSize: "0.875rem",
+              transition: "all 0.3s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.background = "rgba(34,197,94,0.25)";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = "rgba(34,197,94,0.15)";
+            }}
+          >
+            <CheckCircle size={15} strokeWidth={2} />
+            View Dashboard
+            <ArrowRight size={14} strokeWidth={2} />
+          </a>
+        );
+      }
+      return (
+        <div
+          className="crs-btn-enroll"
+          style={{
+            width: "100%",
+            padding: "0.75rem 1.5rem",
+            borderRadius: "12px",
+            background: "rgba(239,68,68,0.1)",
+            color: "#EF4444",
+            fontWeight: "600",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.5rem",
+            cursor: "not-allowed",
+            fontFamily: "var(--font-display, Poppins)",
+            fontSize: "0.875rem",
+          }}
+        >
+          <Lock size={15} strokeWidth={2} />
+          Class Full
+        </div>
+      );
+    }
+
+    // Not enrolled
+    if (!enrollment) {
+      return (
+        <button
+          className="crs-btn-enroll"
+          onClick={() => onEnroll(course.id)}
+          disabled={enrollingId === course.id}
+          style={{
+            width: "100%",
+            padding: "0.75rem 1.5rem",
+            borderRadius: "12px",
+            border: "none",
+            background: "linear-gradient(135deg, #9333EA, #DB2777)",
+            color: "#fff",
+            fontWeight: "600",
+            cursor: "pointer",
+            transition: "all 0.3s ease",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.5rem",
+            boxShadow: "0 4px 15px rgba(147,51,234,0.3)",
+            fontFamily: "var(--font-display, Poppins)",
+            fontSize: "0.875rem",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.transform = "translateY(-2px)";
+            e.target.style.boxShadow = "0 8px 25px rgba(147,51,234,0.4)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = "translateY(0)";
+            e.target.style.boxShadow = "0 4px 15px rgba(147,51,234,0.3)";
+          }}
+        >
+          {enrollingId === course.id ? (
+            <>
+              <Loader2 size={15} strokeWidth={2} className="ld-spin" />
+              Requesting…
+            </>
+          ) : (
+            <>
+              <Zap size={15} strokeWidth={2} />
+              Request to Enroll
+            </>
+          )}
+        </button>
+      );
+    }
+
+    // Pending
+    if (enrollment.status === "PENDING") {
+      return (
+        <button
+          className="crs-btn-enroll"
+          onClick={() => onCancel(enrollment.id, course.id)}
+          disabled={cancellingId === enrollment.id}
+          style={{
+            width: "100%",
+            padding: "0.75rem 1.5rem",
+            borderRadius: "12px",
+            border: "2px solid rgba(234,179,8,0.3)",
+            background: "transparent",
+            color: "#EAB308",
+            fontWeight: "600",
+            cursor: "pointer",
+            transition: "all 0.3s ease",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.5rem",
+            fontFamily: "var(--font-display, Poppins)",
+            fontSize: "0.875rem",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.background = "rgba(234,179,8,0.1)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = "transparent";
+          }}
+        >
+          {cancellingId === enrollment.id ? (
+            <>
+              <Loader2 size={14} strokeWidth={2} className="ld-spin" />
+              Cancelling…
+            </>
+          ) : (
+            <>
+              <Clock size={15} strokeWidth={2} />
+              Pending — Cancel
+            </>
+          )}
+        </button>
+      );
+    }
+
+    // Approved
+    if (enrollment.status === "APPROVED") {
+      return (
+        <a
+          href="/dashboard"
+          className="crs-btn-enroll"
+          style={{
+            width: "100%",
+            padding: "0.75rem 1.5rem",
+            borderRadius: "12px",
+            background: "rgba(34,197,94,0.15)",
+            color: "#22C55E",
+            fontWeight: "600",
+            textDecoration: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.5rem",
+            fontFamily: "var(--font-display, Poppins)",
+            fontSize: "0.875rem",
+            transition: "all 0.3s ease",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.background = "rgba(34,197,94,0.25)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = "rgba(34,197,94,0.15)";
+          }}
+        >
+          <CheckCircle size={15} strokeWidth={2} />
+          View Dashboard
+          <ArrowRight size={14} strokeWidth={2} />
+        </a>
+      );
+    }
+
+    // Rejected
+    if (enrollment.status === "REJECTED") {
+      return (
+        <div
+          className="crs-btn-enroll"
+          style={{
+            width: "100%",
+            padding: "0.75rem 1.5rem",
+            borderRadius: "12px",
+            background: "rgba(239,68,68,0.1)",
+            color: "#EF4444",
+            fontWeight: "600",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.5rem",
+            fontFamily: "var(--font-display, Poppins)",
+            fontSize: "0.875rem",
+          }}
+        >
+          <XCircle size={15} strokeWidth={2} />
+          Application Rejected
+        </div>
+      );
+    }
+
+    return null;
+  };
 
   return (
     <article
@@ -48,8 +342,8 @@ function CourseCard({ course, index }) {
     >
       {/* Image */}
       <div className="crs-card-img-wrap">
-        {course.imageUrl ? (
-          <img src={course.imageUrl} alt={course.title} loading="lazy" />
+        {imageSrc ? (
+          <img src={imageSrc} alt={course.title} loading="lazy" />
         ) : (
           <div className="crs-card-img-placeholder">
             <GraduationCap size={40} strokeWidth={1.5} />
@@ -112,14 +406,7 @@ function CourseCard({ course, index }) {
 
       {/* CTA */}
       <div className="crs-card-footer">
-        <a
-          href="/events"
-          className="crs-btn-enroll"
-          id={`courses-enroll-${course.id}`}
-        >
-          <Zap size={15} strokeWidth={2} />
-          Enroll Now
-        </a>
+        {renderEnrollButton()}
       </div>
     </article>
   );
@@ -131,7 +418,146 @@ export default function CoursesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeFilter, setActiveFilter] = useState("All");
+  const [user, setUser] = useState(null);
+  const [enrollmentMap, setEnrollmentMap] = useState({});
+  const [enrollingId, setEnrollingId] = useState(null);
+  const [cancellingId, setCancellingId] = useState(null);
+  const [toast, setToast] = useState({ message: "", type: "", visible: false });
 
+  // ── Toast helper ──
+  const showToast = (message, type = "success") => {
+    setToast({ message, type, visible: true });
+    setTimeout(() => setToast((t) => ({ ...t, visible: false })), 3000);
+  };
+
+  // ── Build enrollment map ──
+  const buildEnrollmentMap = (enrollments) => {
+    const map = {};
+    enrollments.forEach((en) => {
+      if (en.eventId) {
+        map[en.eventId] = { id: en.id, status: en.status };
+      }
+    });
+    return map;
+  };
+
+  // ── Fetch user enrollments ──
+  const fetchUserEnrollments = async (userId) => {
+    try {
+      const enrollments = await enrollmentService.getUserEnrollments(userId);
+      setEnrollmentMap(buildEnrollmentMap(enrollments));
+    } catch (err) {
+      console.error("Failed to fetch enrollments:", err);
+    }
+  };
+
+  // ── Auth state ──
+  useEffect(() => {
+    let mounted = true;
+
+    authService.getCurrentUser().then(async (currentUser) => {
+      if (mounted) {
+        setUser(currentUser);
+        if (currentUser) {
+          await fetchUserEnrollments(currentUser.uid);
+        }
+      }
+    });
+
+    const firebaseAuth = authService.auth || authService.getAuth?.();
+    let unsubscribe = null;
+    if (firebaseAuth && typeof firebaseAuth.onAuthStateChanged === "function") {
+      unsubscribe = firebaseAuth.onAuthStateChanged(async (u) => {
+        if (mounted) {
+          setUser(u);
+          if (u) {
+            await fetchUserEnrollments(u.uid);
+          } else {
+            setEnrollmentMap({});
+          }
+        }
+      });
+    }
+
+    return () => {
+      mounted = false;
+      if (unsubscribe) unsubscribe();
+    };
+  }, []);
+
+  // ── Actions ──
+  const handleSignIn = async () => {
+    try {
+      const result = await authService.signInWithGoogle();
+      if (result.success) {
+        setUser(result.user);
+        await fetchUserEnrollments(result.user.uid);
+        showToast("Signed in successfully");
+      } else {
+        showToast(result.error || "Sign in failed", "error");
+      }
+    } catch (err) {
+      console.error("Sign in failed:", err);
+      showToast("Sign in failed", "error");
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await authService.signOut();
+      setUser(null);
+      setEnrollmentMap({});
+      showToast("Signed out successfully");
+    } catch (err) {
+      console.error("Sign out failed:", err);
+      showToast("Sign out failed", "error");
+    }
+  };
+
+  const handleEnroll = async (eventId) => {
+    if (!user) {
+      showToast("Please sign in first", "error");
+      return;
+    }
+    
+    setEnrollingId(eventId);
+    try {
+      const result = await enrollmentService.requestEnrollment(
+        user.uid,
+        eventId
+      );
+      setEnrollmentMap((prev) => ({
+        ...prev,
+        [eventId]: { id: result.enrollmentId, status: "PENDING" },
+      }));
+      showToast("Enrollment request sent!");
+    } catch (err) {
+      console.error("Enrollment error:", err);
+      showToast(err.message || "Failed to enroll", "error");
+    } finally {
+      setEnrollingId(null);
+    }
+  };
+
+  const handleCancel = async (enrollmentId, eventId) => {
+    setCancellingId(enrollmentId);
+    try {
+      await enrollmentService.cancelEnrollment(enrollmentId, eventId);
+      setEnrollmentMap((prev) => {
+        const next = { ...prev };
+        delete next[eventId];
+        return next;
+      });
+      showToast("Enrollment request cancelled");
+    } catch (err) {
+      console.error("Cancel error:", err);
+      showToast("Failed to cancel request", "error");
+    } finally {
+      setCancellingId(null);
+    }
+  };
+
+  // ── Fetch courses ──
   useEffect(() => {
     let cancelled = false;
 
@@ -174,7 +600,13 @@ export default function CoursesPage() {
   // ────────────────────────────────────────────────────────────────
   return (
     <div className="courses-page">
-      <Header />
+      {/* 🔥 FIX: Pass user props to Header */}
+      <Header 
+        user={user} 
+        onSignIn={handleSignIn} 
+        onSignOut={handleSignOut} 
+      />
+      
       {/* ── Hero ── */}
       <header className="crs-hero">
         <div className="crs-hero-inner">
@@ -268,7 +700,18 @@ export default function CoursesPage() {
         {!loading && filtered.length > 0 && (
           <div className="crs-grid">
             {filtered.map((course, i) => (
-              <CourseCard key={course.id} course={course} index={i} />
+              <CourseCard
+                key={course.id}
+                course={course}
+                index={i}
+                user={user}
+                enrollmentMap={enrollmentMap}
+                enrollingId={enrollingId}
+                cancellingId={cancellingId}
+                onEnroll={handleEnroll}
+                onCancel={handleCancel}
+                onSignIn={handleSignIn}
+              />
             ))}
           </div>
         )}
@@ -301,7 +744,15 @@ export default function CoursesPage() {
           </div>
         )}
       </main>
+      
       <Footer />
+
+      {/* Toast Notification */}
+      <Toast
+        message={toast.message}
+        type={toast.type}
+        visible={toast.visible}
+      />
     </div>
   );
 }
