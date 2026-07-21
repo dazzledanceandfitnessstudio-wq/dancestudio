@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -5,6 +6,7 @@ import {
   authService,
   eventService,
   enrollmentService,
+  postService, // 👈 Add this
 } from "../lib/firebaseService";
 
 // Custom Components
@@ -16,6 +18,7 @@ import DanceStylesGrid from "./components/DanceStylesGrid";
 import EventSlider from "./components/EventSlider";
 import PromoBanner from "./components/PromoBanner";
 import LevelCards from "./components/LevelCards";
+import PostCard from "./components/PostCard"; // 👈 Add this
 
 // ─── Toast ────────────────────────────────────────────────────────
 function Toast({ message, type, visible }) {
@@ -38,6 +41,8 @@ export default function LandingPage() {
   const [loadingEvents, setLoadingEvents] = useState(true);
   const [enrollingId, setEnrollingId] = useState(null);
   const [toast, setToast] = useState({ message: "", type: "", visible: false });
+  const [posts, setPosts] = useState([]); // 👈 Add this
+  const [loadingPosts, setLoadingPosts] = useState(true); // 👈 Add this
 
   // ── Show Toast ──
   const showToast = useCallback((message, type = "success") => {
@@ -69,7 +74,6 @@ export default function LandingPage() {
       .then((fetched) => {
         if (!mounted) return;
         if (fetched) {
-          // Just grab a few for the landing slider
           setEvents(fetched.slice(0, 4));
         }
       })
@@ -78,6 +82,22 @@ export default function LandingPage() {
       })
       .finally(() => {
         if (mounted) setLoadingEvents(false);
+      });
+
+    // 👇 Fetch posts
+    postService
+      .getAllPosts()
+      .then((fetched) => {
+        if (!mounted) return;
+        if (fetched) {
+          setPosts(fetched.slice(0, 3)); // Sirf 3 latest posts
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to load posts", err);
+      })
+      .finally(() => {
+        if (mounted) setLoadingPosts(false);
       });
 
     return () => {
@@ -141,7 +161,27 @@ export default function LandingPage() {
       {/* 4. Browse by Style Grid (New) */}
       <DanceStylesGrid />
 
-      {/* 5. Featured Events Slider */}
+      {/* 5. Latest Posts */} {/* 👈 Add this section */}
+      <section className="ld-section ld-container">
+        <h2 style={{ fontSize: "2rem", marginBottom: "1.5rem" }}>
+          📰 Latest Updates
+        </h2>
+        {loadingPosts ? (
+          <p>Loading posts...</p>
+        ) : (
+          <div style={{ 
+            display: "grid", 
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", 
+            gap: "1.5rem" 
+          }}>
+            {posts.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* 6. Featured Events Slider */}
       <EventSlider
         events={events}
         loadingEvents={loadingEvents}
@@ -149,13 +189,13 @@ export default function LandingPage() {
         onEnrollClick={handleEnrollClick}
       />
 
-      {/* 6. Promo Banner (New) */}
+      {/* 7. Promo Banner (New) */}
       <PromoBanner />
 
-      {/* 7. Level Cards (New) */}
+      {/* 8. Level Cards (New) */}
       <LevelCards />
 
-      {/* 8. Footer */}
+      {/* 9. Footer */}
       <Footer />
 
       {/* Toast Notification */}
@@ -167,3 +207,5 @@ export default function LandingPage() {
     </div>
   );
 }
+
+

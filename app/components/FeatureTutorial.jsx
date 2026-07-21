@@ -25,13 +25,19 @@ export default function FeatureTutorial() {
           </Link>
         </div>
         <div className="ft-media">
-          <img
-            src="https://media3.giphy.com/media/l0MYC0LajbaPoEADu/giphy.gif"
-            alt="Dance tutorial preview"
+          <iframe 
+            width="560" 
+            height="315" 
+            src="https://www.youtube.com/embed/G3HRD5f0YEQ?si=evRbbeET0AVUwLbU" 
+            title="YouTube video player" 
+            frameBorder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            referrerPolicy="strict-origin-when-cross-origin" 
+            allowFullScreen
           />
-          <button className="ft-play-btn" aria-label="Play preview">
+          {/* <button className="ft-play-btn" aria-label="Play preview">
             <Play size={28} fill="#FFFFFF" />
-          </button>
+          </button> */}
         </div>
       </div>
     </section>
