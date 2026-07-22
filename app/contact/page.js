@@ -171,72 +171,137 @@ export default function ContactPage() {
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+// In handleSubmit function of contact page
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    // Basic validation
-    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
-      showToast("Please fill in all required fields.", "error");
-      return;
+  if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
+    showToast("Please fill in all required fields.", "error");
+    return;
+  }
+
+  setSubmitting(true);
+
+  try {
+    // ─── 📧 SEND EMAIL (Admin + User both) ───
+    const emailResponse = await fetch("/api/email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "contact-form",
+        name: form.name,
+        email: form.email,
+        phone: form.phone || "Not provided",
+        subject: form.subject || "General Inquiry",
+        message: form.message,
+      }),
+    });
+
+    const emailResult = await emailResponse.json();
+
+    if (!emailResult.success) {
+      throw new Error(emailResult.error || "Failed to send email");
     }
 
-    setSubmitting(true);
-
-    try {
-      // 1. Send email to admin
-      const emailResponse = await fetch("/api/email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "contact-form",
+    // ─── 🔔 SEND FCM TO ADMINS ONLY ───
+    // (isAdmin: true users will get this)
+    await fetch("/api/fcm", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        notification: {
+          title: "📩 New Contact Form Submission",
+          body: `${form.name} (${form.email}) sent a message: "${form.message.substring(0, 50)}${form.message.length > 50 ? "..." : ""}"`,
+        },
+        data: {
+          type: "CONTACT_FORM",
           name: form.name,
           email: form.email,
-          phone: form.phone || "Not provided",
+          phone: form.phone || "",
           subject: form.subject || "General Inquiry",
-          message: form.message,
-        }),
-      });
+        },
+      }),
+    });
 
-      const emailResult = await emailResponse.json();
+    showToast("Thanks for reaching out! We'll be in touch soon.");
+    setForm((prev) => ({
+      ...prev,
+      subject: "",
+      message: "",
+    }));
+  } catch (err) {
+    console.error("Submit error:", err);
+    showToast(err.message || "Failed to send message. Please try again.", "error");
+  } finally {
+    setSubmitting(false);
+  }
+};
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
 
-      if (!emailResult.success) {
-        throw new Error(emailResult.error || "Failed to send email");
-      }
+  //   // Basic validation
+  //   if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
+  //     showToast("Please fill in all required fields.", "error");
+  //     return;
+  //   }
 
-      // 2. Send FCM notification to admins
-      await fetch("/api/fcm", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          notification: {
-            title: "📩 New Contact Form Submission",
-            body: `${form.name} (${form.email}) sent a message: "${form.message.substring(0, 50)}${form.message.length > 50 ? "..." : ""}"`,
-          },
-          data: {
-            type: "CONTACT_FORM",
-            name: form.name,
-            email: form.email,
-            phone: form.phone || "",
-            subject: form.subject || "General Inquiry",
-          },
-        }),
-      });
+  //   setSubmitting(true);
 
-      showToast("Thanks for reaching out! We'll be in touch soon.");
-      setForm((prev) => ({
-        ...prev,
-        subject: "",
-        message: "",
-        phone: prev.phone, // Keep phone if user entered it
-      }));
-    } catch (err) {
-      console.error("Submit error:", err);
-      showToast(err.message || "Failed to send message. Please try again.", "error");
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  //   try {
+  //     // 1. Send email to admin
+  //     const emailResponse = await fetch("/api/email", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         type: "contact-form",
+  //         name: form.name,
+  //         email: form.email,
+  //         phone: form.phone || "Not provided",
+  //         subject: form.subject || "General Inquiry",
+  //         message: form.message,
+  //       }),
+  //     });
+
+  //     const emailResult = await emailResponse.json();
+
+  //     if (!emailResult.success) {
+  //       throw new Error(emailResult.error || "Failed to send email");
+  //     }
+
+  //     // 2. Send FCM notification to admins
+  //     await fetch("/api/fcm", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         notification: {
+  //           title: "📩 New Contact Form Submission",
+  //           body: `${form.name} (${form.email}) sent a message: "${form.message.substring(0, 50)}${form.message.length > 50 ? "..." : ""}"`,
+  //         },
+  //         data: {
+  //           type: "CONTACT_FORM",
+  //           name: form.name,
+  //           email: form.email,
+  //           phone: form.phone || "",
+  //           subject: form.subject || "General Inquiry",
+  //         },
+  //       }),
+  //     });
+
+  //     showToast("Thanks for reaching out! We'll be in touch soon.");
+  //     setForm((prev) => ({
+  //       ...prev,
+  //       subject: "",
+  //       message: "",
+  //       phone: prev.phone, // Keep phone if user entered it
+  //     }));
+  //   } catch (err) {
+  //     console.error("Submit error:", err);
+  //     showToast(err.message || "Failed to send message. Please try again.", "error");
+  //   } finally {
+  //     setSubmitting(false);
+  //   }
+  // };
 
   return (
     <div className="contact-page">
@@ -384,7 +449,7 @@ export default function ContactPage() {
                       name="phone"
                       type="tel"
                       className="ct-input"
-                      placeholder="+91 83599 14344"
+                      placeholder="+91 **********"
                       value={form.phone}
                       onChange={handleChange}
                     />
