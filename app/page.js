@@ -172,12 +172,15 @@ export default function LandingPage() {
       {/* 4. Browse by Style Grid */}
       <DanceStylesGrid />
 
-      {/* 5. Latest Posts */}
+      {/* 5. About Section - NEW */}
+      <AboutSection />
+
+      {/* 7. Latest Posts */}
       {!loadingPosts && posts.length > 0 && (
         <PostsSection posts={posts} />
       )}
 
-      {/* 6. Featured Events Slider */}
+      {/* 8. Featured Events Slider - With improved spacing */}
       <EventSlider
         events={events}
         loadingEvents={loadingEvents}
@@ -185,13 +188,16 @@ export default function LandingPage() {
         onEnrollClick={handleEnrollClick}
       />
 
-      {/* 7. Promo Banner */}
+      {/* 9. Promo Banner */}
       <PromoBanner />
 
-      {/* 8. Level Cards */}
+      {/* 10. Level Cards */}
       <LevelCards />
 
-      {/* 9. Footer */}
+      {/* 6. Gallery Section - NEW */}
+      <GallerySection />
+
+      {/* 11. Footer */}
       <Footer />
 
       {/* Toast Notification */}
@@ -203,7 +209,6 @@ export default function LandingPage() {
     </div>
   );
 }
-
 
 
 // "use client";

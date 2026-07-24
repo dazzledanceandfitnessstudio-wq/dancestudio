@@ -91,8 +91,7 @@ export default function AboutSection() {
         .about-section {
           padding: 5rem 1.5rem;
           background: var(--background);
-          border-top: 1px solid var(--border);
-          border-bottom: 1px solid var(--border);
+          /* REMOVED: border-top and border-bottom to eliminate the thin line */
         }
         .about-container {
           max-width: 1200px;

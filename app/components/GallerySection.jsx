@@ -8,7 +8,6 @@ export default function GallerySection() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Sample gallery images - replace with your actual images
   const galleryImages = [
     {
       src: "/gallery/dance-class-1.jpg",
@@ -59,7 +58,6 @@ export default function GallerySection() {
     setCurrentIndex((prev) => (prev + 1) % galleryImages.length);
   };
 
-  // Keyboard navigation
   const handleKeyDown = (e) => {
     if (e.key === 'Escape') closeLightbox();
     if (e.key === 'ArrowLeft') goToPrevious();
@@ -87,7 +85,6 @@ export default function GallerySection() {
               onClick={() => openLightbox(index)}
             >
               <div className="gallery-image-wrapper">
-                {/* Using img tag with fallback to show placeholder */}
                 <div className="gallery-image-placeholder">
                   <span className="gallery-image-emoji">💃</span>
                   <span className="gallery-image-title">{image.title}</span>
@@ -100,7 +97,6 @@ export default function GallerySection() {
           ))}
         </div>
 
-        {/* Lightbox */}
         {selectedImage !== null && (
           <div 
             className="gallery-lightbox"
@@ -147,7 +143,8 @@ export default function GallerySection() {
       <style jsx>{`
         .gallery-section {
           padding: 5rem 1.5rem;
-          background: var(--surface-alt);
+          background: var(--background);
+          /* CHANGED: Now matches the About section background */
         }
         .gallery-container {
           max-width: 1200px;
@@ -250,7 +247,6 @@ export default function GallerySection() {
           color: #fff;
         }
 
-        /* Lightbox */
         .gallery-lightbox {
           position: fixed;
           inset: 0;
