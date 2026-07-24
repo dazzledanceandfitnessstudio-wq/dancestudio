@@ -18,6 +18,8 @@ import EventSlider from "./components/EventSlider";
 import PromoBanner from "./components/PromoBanner";
 import LevelCards from "./components/LevelCards";
 import PostsSection from "./components/PostsSection";
+import AboutSection from "./components/AboutSection";
+import GallerySection from "./components/GallerySection";
 
 // ─── Toast ────────────────────────────────────────────────────────
 function Toast({ message, type, visible }) {
@@ -72,16 +74,26 @@ export default function LandingPage() {
       .getAllEvents()
       .then((fetched) => {
         if (!mounted) return;
-        if (fetched) {
-          setEvents(fetched.slice(0, 4));
+        if (fetched && fetched.length > 0) {
+          // Show all events, or limit to 4 most recent
+          const sortedEvents = [...fetched].sort((a, b) => {
+            const dateA = a.createdAt?.toDate?.() || new Date(a.createdAt || 0);
+            const dateB = b.createdAt?.toDate?.() || new Date(b.createdAt || 0);
+            return dateB - dateA;
+          });
+          setEvents(sortedEvents.slice(0, 6)); // Show up to 6 events on landing
+        } else {
+          setEvents([]);
         }
       })
       .catch((err) => {
         console.error("Failed to load events", err);
+        setEvents([]);
       })
       .finally(() => {
         if (mounted) setLoadingEvents(false);
       });
+
 
     // Fetch posts
     postService

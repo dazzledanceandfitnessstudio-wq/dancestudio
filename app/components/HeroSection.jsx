@@ -55,14 +55,16 @@ export default function HeroSection({ user, onSignIn }) {
     <div className="ld-hero-split">
       <div className="ld-hero-media">
         <div className="ld-video-wrapper">
-          <iframe
-            src="https://player.vimeo.com/video/938419168?badge=0&autopause=0&player_id=0&app_id=58479&controls=0&autoplay=1&muted=1&loop=1&background=1"
-            frameBorder="0"
-            allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
-            title="Dazzle Dance Studio"
-            className="ld-hero-video"
-            allowFullScreen
-          />
+          <div className="video-container">
+            <iframe
+              src="https://player.vimeo.com/video/938419168?badge=0&autopause=0&player_id=0&app_id=58479&controls=0&autoplay=1&muted=1&loop=1&background=1"
+              frameBorder="0"
+              allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+              title="Dazzle Dance Studio"
+              className="ld-hero-video"
+              allowFullScreen
+            />
+          </div>
         </div>
       </div>
       <div className="ld-hero-content">
@@ -95,6 +97,94 @@ export default function HeroSection({ user, onSignIn }) {
               <br />
               GOALS
             </h1>
+
+            {/*// --- */}
+
+            <div className="hero-text-content">
+              <h3 className="hero-heading-rotator">
+                {content[currentIndex].heading}
+              </h3>
+              <p className="hero-description-rotator">
+                {displayText}
+                <span className="cursor-blink" />
+              </p>
+            </div>
+            <button className="btn-gradient-cta" onClick={onSignIn}>
+              Get Started
+            </button>
+          </>
+        )}  
+      </div>
+
+      <style jsx>{`
+        @keyframes blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
+        }
+        .cursor-blink {
+          display: inline-block;
+          width: 2px;
+          height: 1em;
+          background-color: #fff;
+          margin-left: 2px;
+          animation: blink 0.8s step-end infinite;
+        }
+        .video-container {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          z-index: 1;
+        }
+        .video-container iframe {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          min-width: 100%;
+          min-height: 100%;
+          width: auto;
+          height: auto;
+          z-index: 1;
+        }
+        .hero-text-content {
+          position: relative;
+          z-index: 2;
+        }
+        .hero-heading-rotator {
+          font-size: 1.4rem;
+          font-weight: 700;
+          color: #FFD93D;
+          margin-bottom: 0.5rem;
+          text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .hero-description-rotator {
+          color: #e0e0e0;
+          line-height: 1.6;
+        }
+        @media (max-width: 768px) {
+          .hero-heading-rotator {
+            font-size: 1.1rem;
+          }
+          .hero-description-rotator {
+            font-size: 0.9rem;
+          }
+        }
+        @media (max-width: 480px) {
+          .hero-heading-rotator {
+            font-size: 0.95rem;
+          }
+          .hero-description-rotator {
+            font-size: 0.8rem;
+          }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+
+/*
             <div>
               <h3 style={{ 
                 fontSize: "1.4rem", 
@@ -135,7 +225,7 @@ export default function HeroSection({ user, onSignIn }) {
     </div>
   );
 }
-
+*/
 
 
 
