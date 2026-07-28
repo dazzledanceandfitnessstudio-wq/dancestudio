@@ -18,7 +18,12 @@ import EventSlider from "./components/EventSlider";
 import PromoBanner from "./components/PromoBanner";
 import LevelCards from "./components/LevelCards";
 import PostsSection from "./components/PostsSection";
-
+import Gallery from "./components/Gallery";
+import BottomHero from './components/bottomhero';
+import ReviewSlider from "./components/ReviewSlider";
+import SocialMediaLinks from "./components/SocialMediaLinks";
+import KathakSection from "./components/KathakSection";
+import DanceFitnessSection from './components/DanceFitnessSection';
 // ─── Toast ────────────────────────────────────────────────────────
 function Toast({ message, type, visible }) {
   return (
@@ -153,13 +158,15 @@ export default function LandingPage() {
 
       {/* 2. Hero Split */}
       <HeroSection user={user} onSignIn={handleSignIn} />
-
+<BottomHero />
       {/* 3. Feature Tutorial */}
       <FeatureTutorial />
 
       {/* 4. Browse by Style Grid */}
       <DanceStylesGrid />
-
+{/* this is kathhak section  */}
+<DanceFitnessSection />
+      <KathakSection />
       {/* 5. Latest Posts */}
       {!loadingPosts && posts.length > 0 && (
         <PostsSection posts={posts} />
@@ -178,7 +185,13 @@ export default function LandingPage() {
 
       {/* 8. Level Cards */}
       <LevelCards />
+<Gallery />
 
+      {/* 11. Review Slider */}
+<ReviewSlider />
+
+{/* 12. Social Media Links */}
+<SocialMediaLinks />
       {/* 9. Footer */}
       <Footer />
 
