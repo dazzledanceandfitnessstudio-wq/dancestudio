@@ -165,7 +165,7 @@ export default function LandingPage() {
       {/* 4. Browse by Style Grid */}
       <DanceStylesGrid />
 {/* this is kathhak section  */}
-<DanceFitnessSection />
+{/* <DanceFitnessSection /> */}
       <KathakSection />
       {/* 5. Latest Posts */}
       {!loadingPosts && posts.length > 0 && (

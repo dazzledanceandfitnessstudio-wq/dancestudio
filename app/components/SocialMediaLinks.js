@@ -1,43 +1,14 @@
-// components/SocialMediaLinks.js
 "use client";
 
-export default function SocialMediaLinks({ variant = 'horizontal' }) {
+export default function SocialMediaLinks() {
   const socialLinks = [
-    {
-      id: 'instagram1',
-      platform: 'Instagram',
-      handle: '@dazzlestudio',
-      url: 'https://instagram.com/dazzlestudio',
-      icon: 'instagram',
-      color: '#E4405F',
-      bgColor: 'rgba(228, 64, 95, 0.1)'
-    },
-    {
-      id: 'instagram2',
-      platform: 'Instagram',
-      handle: '@priyaangan_kathak',
-      url: 'https://instagram.com/priyaangan_kathak',
-      icon: 'instagram',
-      color: '#E4405F',
-      bgColor: 'rgba(228, 64, 95, 0.1)'
-    },
     {
       id: 'facebook',
       platform: 'Facebook',
       handle: 'Dazzle Studio',
       url: 'https://facebook.com/dazzlestudio',
       icon: 'facebook',
-      color: '#1877F2',
-      bgColor: 'rgba(24, 119, 242, 0.1)'
-    },
-    {
-      id: 'youtube',
-      platform: 'YouTube',
-      handle: 'Dazzle Dance',
-      url: 'https://youtube.com/dazzledance',
-      icon: 'youtube',
-      color: '#FF0000',
-      bgColor: 'rgba(255, 0, 0, 0.1)'
+      color: '#3B5998', // Classic Facebook Blue
     },
     {
       id: 'twitter',
@@ -45,8 +16,31 @@ export default function SocialMediaLinks({ variant = 'horizontal' }) {
       handle: '@dazzle_dance',
       url: 'https://twitter.com/dazzle_dance',
       icon: 'twitter',
-      color: '#1DA1F2',
-      bgColor: 'rgba(29, 161, 242, 0.1)'
+      color: '#55ACEE', // Classic Twitter Light Blue
+    },
+    {
+      id: 'instagram1',
+      platform: 'Instagram',
+      handle: '@dazzlestudio',
+      url: 'https://instagram.com/dazzlestudio',
+      icon: 'instagram',
+      color: '#C13584', // Instagram Pink/Purple
+    },
+    {
+      id: 'instagram2',
+      platform: 'Priyaangan Kathak',
+      handle: '@priyaangan_kathak',
+      url: 'https://instagram.com/priyaangan_kathak',
+      icon: 'instagram',
+      color: '#E1306C', // Slightly different shade for the second one
+    },
+    {
+      id: 'youtube',
+      platform: 'YouTube',
+      handle: 'Dazzle Dance',
+      url: 'https://youtube.com/dazzledance',
+      icon: 'youtube',
+      color: '#FF0000', // YouTube Red
     },
     {
       id: 'whatsapp',
@@ -54,8 +48,7 @@ export default function SocialMediaLinks({ variant = 'horizontal' }) {
       handle: '+91 98765 43210',
       url: 'https://wa.me/919876543210',
       icon: 'whatsapp',
-      color: '#25D366',
-      bgColor: 'rgba(37, 211, 102, 0.1)'
+      color: '#25D366', // WhatsApp Green
     }
   ];
 
@@ -69,25 +62,25 @@ export default function SocialMediaLinks({ variant = 'horizontal' }) {
     {
       icon: 'email',
       label: 'Email',
-      value: 'info@dazzlestudio.com',
-      href: 'mailto:info@dazzlestudio.com'
+      value: 'info@dazzlestudios.in',
+      href: 'mailto:info@dazzlestudios.in'
     },
     {
       icon: 'location',
       label: 'Location',
-      value: 'Mumbai, India',
+      value: 'Jabalpur ,india',
       href: 'https://maps.google.com'
     },
     {
       icon: 'website',
       label: 'Website',
-      value: 'www.dazzlestudio.com',
-      href: 'https://dazzlestudio.com'
+      value: 'www.dazzlestudios.in',
+      href: 'https://dazzlestudios.in'
     }
   ];
 
   // SVG Icon Components
-  const SocialIcon = ({ name, color, size = 20 }) => {
+  const SocialIcon = ({ name, color = "#FFFFFF", size = 24 }) => {
     const icons = {
       instagram: (
         <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -146,285 +139,222 @@ export default function SocialMediaLinks({ variant = 'horizontal' }) {
   };
 
   return (
-    <div className={`social-links ${variant}`}>
+    <div className="social-section-wrapper">
       <div className="social-links-container">
-        <div className="social-title">
-          <h3>Connect With Us</h3>
-          <p>Follow us on social media for updates and inspiration</p>
+        
+        {/* Main Inspired Social Header */}
+        <div className="social-header-content">
+          <h2>Follow us on Social</h2>
+          <p>Looking for the latest industry insights, timely studio updates? Follow us on social:</p>
+          
+          {/* Circular Hover Icons (Gool Icons) */}
+          <div className="social-circle-icons">
+            {socialLinks.map((link) => (
+              <a
+                key={link.id}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="circle-icon-link"
+                style={{ '--brand-color': link.color }}
+                aria-label={`Follow us on ${link.platform}`}
+                title={`${link.platform} - ${link.handle}`}
+              >
+                <SocialIcon name={link.icon} color="#FFFFFF" size={24} />
+              </a>
+            ))}
+          </div>
         </div>
 
-        <div className="social-grid">
-          {socialLinks.map((link) => (
-            <a
-              key={link.id}
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="social-link-item"
-              style={{ '--hover-color': link.color }}
-              aria-label={`Follow us on ${link.platform}`}
-            >
-              <div className="social-icon-wrapper" style={{ background: link.bgColor }}>
-                <SocialIcon name={link.icon} color={link.color} size={22} />
-              </div>
-              <div className="social-link-info">
-                <span className="social-platform">{link.platform}</span>
-                <span className="social-handle">{link.handle}</span>
-              </div>
-              <span className="social-follow">Follow</span>
-            </a>
-          ))}
-        </div>
-
-        <div className="contact-grid">
+        {/* Contact Information Grid below */}
+        {/* <div className="contact-info-grid">
           {contactInfo.map((item, index) => (
             <a
               key={index}
               href={item.href}
-              className="contact-item"
+              className="contact-card-item"
               target={item.label === 'Location' || item.label === 'Website' ? '_blank' : '_self'}
               rel={item.label === 'Location' || item.label === 'Website' ? 'noopener noreferrer' : ''}
             >
-              <div className="contact-icon-wrapper">
+              <div className="contact-icon-mini">
                 <SocialIcon name={item.icon} color="#FF1F6D" size={18} />
               </div>
-              <div className="contact-info">
-                <span className="contact-label">{item.label}</span>
-                <span className="contact-value">{item.value}</span>
+              <div className="contact-text-group">
+                <span className="contact-label-text">{item.label}</span>
+                <span className="contact-value-text">{item.value}</span>
               </div>
             </a>
           ))}
-        </div>
+        </div> */}
+
       </div>
 
       <style jsx>{`
-        .social-links {
-          background: var(--surface);
-          padding: 3rem 0 2rem;
+        .social-section-wrapper {
+          background: var(--surface, #FAFAFA);
+          padding: 5rem 0 4rem;
           border-top: 1px solid var(--border);
         }
 
         .social-links-container {
-          max-width: 1200px;
+          max-width: 1000px;
           margin: 0 auto;
           padding: 0 1.25rem;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
         }
 
-        .social-title {
+        /* ============================================================
+           HEADER & CIRCULAR ICONS (Inspired by image_b3ecfd.png)
+           ============================================================ */
+        .social-header-content {
           text-align: center;
-          margin-bottom: 2.5rem;
+          margin-bottom: 3.5rem;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
         }
 
-        .social-title h3 {
+        .social-header-content h2 {
           font-family: 'Poppins', sans-serif;
-          font-size: 1.75rem;
+          font-size: 2.5rem;
           font-weight: 800;
-          color: var(--foreground);
-          margin: 0 0 0.5rem;
+          // color: #111111;
+          margin: 0 0 1rem;
+          letter-spacing: -0.02em;
         }
 
-        .social-title p {
-          font-size: 1rem;
-          color: var(--body-text);
-          margin: 0;
+        .social-header-content p {
+          font-size: 1.125rem;
+          // color: #555555;
+          margin: 0 0 2rem;
+          max-width: 600px;
+          line-height: 1.6;
         }
 
-        .social-grid {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 0.75rem;
-          margin-bottom: 2.5rem;
-        }
-
-        .social-link-item {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          padding: 0.875rem 1.25rem;
-          background: var(--background);
-          border: 1px solid var(--border);
-          border-radius: 12px;
-          text-decoration: none;
-          transition: all 0.25s ease-out;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .social-link-item::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          opacity: 0;
-          background: var(--hover-color);
-          transition: opacity 0.25s ease-out;
-          pointer-events: none;
-        }
-
-        .social-link-item:hover::before {
-          opacity: 0.05;
-        }
-
-        .social-link-item:hover {
-          border-color: var(--hover-color);
-          transform: translateY(-2px);
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-        }
-
-        .social-icon-wrapper {
-          width: 44px;
-          height: 44px;
-          border-radius: 10px;
+        .social-circle-icons {
           display: flex;
           align-items: center;
           justify-content: center;
-          flex-shrink: 0;
-          transition: transform 0.2s ease-out;
+          flex-wrap: wrap;
+          gap: 1.25rem;
         }
 
-        .social-link-item:hover .social-icon-wrapper {
-          transform: scale(1.05);
+        /* The Round Icon Design with Hover Effect */
+        .circle-icon-link {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 60px;
+          height: 60px;
+          border-radius: 50%; /* Makes it totally round (gool) */
+          background-color: var(--brand-color);
+          text-decoration: none;
+          transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Smooth bounce transition */
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+          color: white;
         }
 
-        .social-link-info {
-          display: flex;
-          flex-direction: column;
-          gap: 0.125rem;
-          flex: 1;
+        .circle-icon-link:hover {
+          transform: translateY(-8px) scale(1.1); /* Lifts up and scales up */
+          box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
+          filter: brightness(1.1); /* Makes the color pop slightly */
         }
 
-        .social-platform {
-          font-family: 'Poppins', sans-serif;
-          font-size: 0.875rem;
-          font-weight: 600;
-          color: var(--foreground);
-        }
-
-        .social-handle {
-          font-size: 0.75rem;
-          color: var(--muted);
-        }
-
-        .social-follow {
-          font-family: 'Poppins', sans-serif;
-          font-size: 0.6875rem;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.06em;
-          color: var(--hover-color);
-          padding: 0.25rem 0.75rem;
-          border: 1px solid var(--border);
-          border-radius: 999px;
-          transition: all 0.2s ease-out;
-          flex-shrink: 0;
-        }
-
-        .social-link-item:hover .social-follow {
-          background: var(--hover-color);
-          color: #FFFFFF;
-          border-color: var(--hover-color);
-        }
-
-        .contact-grid {
+        /* ============================================================
+           CONTACT INFO GRID
+           ============================================================ */
+        .contact-info-grid {
           display: grid;
-          grid-template-columns: 1fr;
-          gap: 0.75rem;
-          padding-top: 2rem;
-          border-top: 1px solid var(--border);
+          grid-template-columns: repeat(1, 1fr);
+          gap: 1rem;
+          width: 100%;
+          border-top: 1px solid rgba(0,0,0,0.08);
+          padding-top: 3rem;
         }
 
-        .contact-item {
+        .contact-card-item {
           display: flex;
           align-items: center;
           gap: 1rem;
-          padding: 0.875rem 1.25rem;
-          background: var(--background);
-          border: 1px solid var(--border);
+          padding: 1rem 1.25rem;
+          background: #FFFFFF;
+          border: 1px solid rgba(0,0,0,0.05);
           border-radius: 12px;
           text-decoration: none;
           transition: all 0.25s ease-out;
         }
 
-        .contact-item:hover {
-          border-color: var(--foreground);
+        .contact-card-item:hover {
+          border-color: #FF1F6D;
           transform: translateY(-2px);
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+          box-shadow: 0 8px 24px rgba(255, 31, 109, 0.08);
         }
 
-        .contact-icon-wrapper {
+        .contact-icon-mini {
           width: 44px;
           height: 44px;
-          border-radius: 10px;
-          background: rgba(255, 31, 109, 0.07);
+          border-radius: 50%;
+          background: rgba(255, 31, 109, 0.08);
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #FF1F6D;
           flex-shrink: 0;
         }
 
-        .contact-info {
+        .contact-text-group {
           display: flex;
           flex-direction: column;
           gap: 0.125rem;
-          flex: 1;
         }
 
-        .contact-label {
+        .contact-label-text {
           font-family: 'Poppins', sans-serif;
-          font-size: 0.6875rem;
+          font-size: 0.7rem;
           font-weight: 700;
           text-transform: uppercase;
-          letter-spacing: 0.06em;
-          color: var(--muted);
+          letter-spacing: 0.05em;
+          color: #888888;
         }
 
-        .contact-value {
-          font-size: 0.875rem;
+        .contact-value-text {
+          font-size: 0.9375rem;
           font-weight: 500;
-          color: var(--foreground);
+          color: #222222;
         }
 
+        /* ============================================================
+           RESPONSIVE DESIGN
+           ============================================================ */
         @media (min-width: 640px) {
-          .social-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
-          .contact-grid {
+          .contact-info-grid {
             grid-template-columns: repeat(2, 1fr);
           }
         }
 
         @media (min-width: 1024px) {
-          .social-grid {
-            grid-template-columns: repeat(3, 1fr);
-          }
-          .contact-grid {
+          .contact-info-grid {
             grid-template-columns: repeat(4, 1fr);
           }
         }
 
         @media (max-width: 480px) {
-          .social-link-item {
+          .social-header-content h2 {
+            font-size: 2rem;
+          }
+          
+          .social-header-content p {
+            font-size: 0.9375rem;
+          }
+          
+          .circle-icon-link {
+            width: 50px;
+            height: 50px;
+          }
+
+          .contact-card-item {
             padding: 0.75rem 1rem;
-          }
-          .social-platform {
-            font-size: 0.75rem;
-          }
-          .social-handle {
-            font-size: 0.6875rem;
-          }
-          .contact-item {
-            padding: 0.75rem 1rem;
-          }
-          .contact-value {
-            font-size: 0.8125rem;
-          }
-          .social-icon-wrapper {
-            width: 38px;
-            height: 38px;
-          }
-          .contact-icon-wrapper {
-            width: 38px;
-            height: 38px;
           }
         }
       `}</style>
