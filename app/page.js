@@ -24,6 +24,8 @@ import ReviewSlider from "./components/ReviewSlider";
 import SocialMediaLinks from "./components/SocialMediaLinks";
 import KathakSection from "./components/KathakSection";
 import DanceFitnessSection from './components/DanceFitnessSection';
+import AboutPage from "./components/AboutPage";
+
 // ─── Toast ────────────────────────────────────────────────────────
 function Toast({ message, type, visible }) {
   return (
@@ -167,6 +169,8 @@ export default function LandingPage() {
 {/* this is kathhak section  */}
 {/* <DanceFitnessSection /> */}
       <KathakSection />
+        {/* 11. About Page Section */}
+      <AboutPage />
       {/* 5. Latest Posts */}
       {!loadingPosts && posts.length > 0 && (
         <PostsSection posts={posts} />

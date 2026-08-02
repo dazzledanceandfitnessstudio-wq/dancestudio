@@ -93,7 +93,7 @@ export default function AboutPage() {
         onSignOut={handleSignOut} 
       />
       
-      {/* ── Hero ── */}
+      {/* ── Hero ──
       <header className="abt-hero">
         <div className="abt-hero-split">
           <div className="abt-hero-media">
@@ -127,7 +127,7 @@ export default function AboutPage() {
           </div>
         </div>
         <div className="abt-hero-bar" aria-hidden="true" />
-      </header>
+      </header> */}
 
       <main className="abt-container">
         {/* ── Our Mission ── */}

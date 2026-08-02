@@ -49,7 +49,7 @@ export default function PostsSection({ posts }) {
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent"
           }}>
-            Studio News
+            Studio Posts
           </h2>
         </div>
       </div>

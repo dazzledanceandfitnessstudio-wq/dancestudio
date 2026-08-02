@@ -15,8 +15,6 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { authService } from "../../lib/firebaseService";
 
-// ─── No Demo Fallback ──────────────────────────────────────────
-
 // ─── Helpers ────────────────────────────────────────────────────────────────
 function formatDate(timestamp) {
   if (!timestamp) return "";
@@ -38,6 +36,15 @@ function getExcerpt(post) {
   return "";
 }
 
+// Helper to create SEO-friendly slug from title
+function createSlug(title) {
+  if (!title) return '';
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 // ─── Skeleton Card ───────────────────────────────────────────────────────────
 function SkeletonCard() {
   return (
@@ -56,7 +63,9 @@ function SkeletonCard() {
 // ─── Post Card ───────────────────────────────────────────────────────────────
 function PostCard({ post, index }) {
   const excerpt = getExcerpt(post);
-  const category = post.category || post.tag || "Studio News";
+  const category = post.category || post.tag || "General";
+  const slug = createSlug(post.title);
+  const postUrl = `/post/${slug}-${post.id}`;
 
   return (
     <article
@@ -64,7 +73,7 @@ function PostCard({ post, index }) {
       style={{ animationDelay: `${index * 0.07}s` }}
     >
       {/* Image */}
-      <a href={`/post/${post.id}`} className="post-card-img-wrap" tabIndex={-1} aria-hidden="true">
+      <a href={postUrl} className="post-card-img-wrap" tabIndex={-1} aria-hidden="true">
         {post.imageUrl ? (
           <img src={post.imageUrl} alt={post.title} loading="lazy" />
         ) : (
@@ -90,7 +99,7 @@ function PostCard({ post, index }) {
 
         {/* Title */}
         <h3 className="post-card-title">
-          <a href={`/post/${post.id}`}>{post.title}</a>
+          <a href={postUrl}>{post.title}</a>
         </h3>
 
         {/* Excerpt */}
@@ -103,7 +112,7 @@ function PostCard({ post, index }) {
             {formatDate(post.createdAt)}
           </span>
           <a
-            href={`/post/${post.id}`}
+            href={postUrl}
             className="post-card-cta"
             id={`posts-read-more-${post.id}`}
           >
@@ -201,7 +210,7 @@ export default function PostsPage() {
     "All",
     ...new Set(
       posts
-        .map((p) => p.category || p.tag || "Studio News")
+        .map((p) => p.category || p.tag || "General")
         .filter(Boolean)
     ),
   ];
@@ -210,7 +219,7 @@ export default function PostsPage() {
     activeCategory === "All"
       ? posts
       : posts.filter(
-          (p) => (p.category || p.tag || "Studio News") === activeCategory
+          (p) => (p.category || p.tag || "General") === activeCategory
         );
 
   // ── Load more (show 10 then load more) ──
@@ -233,7 +242,6 @@ export default function PostsPage() {
   // ─────────────────────────────────────────────────────────────────
   return (
     <div className="posts-page">
-      {/* 🔥 FIX: Pass user props to Header */}
       <Header 
         user={user} 
         onSignIn={handleSignIn} 
@@ -247,7 +255,7 @@ export default function PostsPage() {
             <Sparkles size={13} strokeWidth={2.5} />
             Dazzle Dance Studio
           </p>
-          <h1 className="posts-hero-title">Studio News &amp; Updates</h1>
+          <h1 className="posts-hero-title">Blog &amp; Updates</h1>
           <p className="posts-hero-subtitle">
             Behind-the-scenes stories, workshop recaps, instructor spotlights,
             and everything happening on and off the floor.
@@ -372,7 +380,7 @@ export default function PostsPage() {
             </div>
             <div className="posts-empty-desc">
               {activeCategory === "All"
-                ? "Check back later for studio news and updates."
+                ? "Check back later for updates."
                 : "Try selecting a different category, or check back soon for new articles."}
             </div>
             {activeCategory !== "All" && (
@@ -391,10 +399,6 @@ export default function PostsPage() {
     </div>
   );
 }
-
-
-
-
 
 
 

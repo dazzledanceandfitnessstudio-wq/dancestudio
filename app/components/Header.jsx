@@ -230,14 +230,14 @@ export default function Header({ user, onSignIn, onSignOut }) {
                             <LayoutDashboard className="w-4 h-4" />
                             Dashboard
                           </Link>
-                          <Link 
+                          {/* <Link 
                             href="/profile" 
                             className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
                             onClick={() => setIsDropdownOpen(false)}
                           >
                             <UserCircle className="w-4 h-4" />
                             Profile
-                          </Link>
+                          </Link> */}
                           <button 
                             onClick={() => {
                               setIsDropdownOpen(false);
